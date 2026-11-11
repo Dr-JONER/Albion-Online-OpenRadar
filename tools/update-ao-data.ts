@@ -1,5 +1,6 @@
 import fs from 'fs';
 import path from 'path';
+import {pathToFileURL} from 'node:url';
 import {downloadFile, DownloadStatus} from "./common";
 
 const GITHUB_RAW_BASE = 'https://raw.githubusercontent.com/ao-data/ao-bin-dumps/refs/heads/master';
@@ -77,6 +78,51 @@ interface HarvestableTier {
 
 type MinifiedHarvestables = Record<string, HarvestableTier[]>;
 
+// Item element names that carry a uniquename. Shared by the id catalog and the
+// Chinese-name lookup so both walks see the same items.
+const ITEM_TYPES = [
+    'hideoutitem', 'trackingitem', 'farmableitem', 'simpleitem',
+    'consumableitem', 'consumablefrominventoryitem', 'equipmentitem',
+    'weapon', 'mount', 'furnitureitem', 'journalitem', 'labourercontract',
+    'mountskin', 'crystalleagueitem'
+] as const;
+
+/**
+ * names.zh-CN.min.json
+ *
+ * Keys are the ids the radar already uses when it looks a name up:
+ * - mobs: namelocatag (`@MOB_...`), the argument to LocalizationDatabase.getText
+ * - items: uniqueName (`items.min.json` `n` / ItemsDatabase `name`), enchant suffix included
+ * - zones: cluster id (`zones.json` key, the id passed to getZone / getZoneName)
+ *
+ * Values are the ZH-CN `<seg>` from ao-bin-dumps localization.xml. A row with no
+ * ZH-CN seg is left out so the frontend can fall back to English.
+ */
+interface ItemNameMeta {
+    descvariable0?: string;
+}
+
+interface ExpeditionRef {
+    cluster: string;
+    title: string;
+}
+
+interface ClusterRef {
+    id: string;
+    file: string;
+}
+
+interface LangPair {
+    en?: string;
+    zh?: string;
+}
+
+export interface ZhNameTables {
+    mobs: Record<string, string>;
+    items: Record<string, string>;
+    zones: Record<string, string>;
+}
+
 // ============================================================================
 // Minification Functions
 // ============================================================================
@@ -90,14 +136,7 @@ async function buildItemsArray(itemsJsonRaw: any): Promise<(MinifiedItem | null)
     const itemsRoot = itemsJsonRaw?.items;
 
     if (itemsRoot) {
-        const itemTypes = [
-            'hideoutitem', 'trackingitem', 'farmableitem', 'simpleitem',
-            'consumableitem', 'consumablefrominventoryitem', 'equipmentitem',
-            'weapon', 'mount', 'furnitureitem', 'journalitem', 'labourercontract',
-            'mountskin', 'crystalleagueitem'
-        ];
-
-        for (const itemType of itemTypes) {
+        for (const itemType of ITEM_TYPES) {
             if (!itemsRoot[itemType]) continue;
             const arr = Array.isArray(itemsRoot[itemType]) ? itemsRoot[itemType] : [itemsRoot[itemType]];
 
@@ -308,7 +347,214 @@ function minifyHarvestables(rawData: any): MinifiedHarvestables {
 }
 
 // ============================================================================
-// Zone Processing (unchanged)
+// Simplified-Chinese names (localization.xml ZH-CN only)
+// ============================================================================
+
+export function decodeXmlEntities(text: string): string {
+    return text
+        .replace(/&#x([0-9a-fA-F]+);/g, (_match, hex: string) => String.fromCodePoint(parseInt(hex, 16)))
+        .replace(/&#(\d+);/g, (_match, dec: string) => String.fromCodePoint(parseInt(dec, 10)))
+        .replace(/&lt;/g, '<')
+        .replace(/&gt;/g, '>')
+        .replace(/&quot;/g, '"')
+        .replace(/&apos;/g, "'")
+        .replace(/&amp;/g, '&');
+}
+
+/** Read EN-US and ZH-CN segs for the tuids in `wanted`. Other languages and other tuids are ignored. */
+export function parseLocalizationXml(xml: string, wanted: ReadonlySet<string>): Map<string, LangPair> {
+    const found = new Map<string, LangPair>();
+    const tuRe = /<tu tuid="([^"]+)">([\s\S]*?)<\/tu>/g;
+    let match: RegExpExecArray | null;
+    while ((match = tuRe.exec(xml)) !== null) {
+        const tuid = match[1];
+        if (!wanted.has(tuid)) continue;
+        const body = match[2];
+        const pair: LangPair = {};
+        const tuvRe = /<tuv xml:lang="([^"]+)">\s*<seg>([\s\S]*?)<\/seg>/g;
+        let tuv: RegExpExecArray | null;
+        while ((tuv = tuvRe.exec(body)) !== null) {
+            const seg = decodeXmlEntities(tuv[2]);
+            if (seg.length === 0) continue;
+            if (tuv[1] === 'EN-US' && pair.en === undefined) pair.en = seg;
+            else if (tuv[1] === 'ZH-CN' && pair.zh === undefined) pair.zh = seg;
+        }
+        found.set(tuid, pair);
+    }
+    return found;
+}
+
+export function buildItemNameMeta(itemsJsonRaw: any): Map<string, ItemNameMeta> {
+    const meta = new Map<string, ItemNameMeta>();
+    const itemsRoot = itemsJsonRaw?.items;
+    if (!itemsRoot) return meta;
+
+    for (const itemType of ITEM_TYPES) {
+        if (!itemsRoot[itemType]) continue;
+        const arr = Array.isArray(itemsRoot[itemType]) ? itemsRoot[itemType] : [itemsRoot[itemType]];
+        for (const item of arr) {
+            const uniqueName = item['@uniquename'];
+            if (!uniqueName || meta.has(uniqueName)) continue;
+            const desc = item['@descvariable0'];
+            meta.set(uniqueName, desc ? {descvariable0: String(desc)} : {});
+        }
+    }
+    return meta;
+}
+
+/**
+ * Localization tuid of an item's display name, matching the game's rules:
+ * artefact items use `@ITEMS_` + base uniqueName (descvariable0 is the crafted
+ * item, not the artefact), other items use `@descvariable0` when set, otherwise
+ * `@ITEMS_` + base uniqueName. `@enchant` rows share the base item's tuid.
+ */
+export function itemNameLocalizationKey(
+    uniqueName: string,
+    metaByUniqueName: ReadonlyMap<string, ItemNameMeta>,
+    knownNames?: ReadonlySet<string>
+): string {
+    const at = uniqueName.lastIndexOf('@');
+    let base = uniqueName;
+    if (at > 0 && /^[0-9]+$/.test(uniqueName.slice(at + 1))) {
+        const parent = uniqueName.slice(0, at);
+        if (metaByUniqueName.has(parent) || knownNames?.has(parent)) base = parent;
+    }
+    if (base.includes('ARTEFACT')) return `@ITEMS_${base}`;
+    const desc = metaByUniqueName.get(base)?.descvariable0;
+    if (desc) return desc;
+    return `@ITEMS_${base}`;
+}
+
+export function collectItemLocalizationKeys(
+    catalog: readonly ({n: string} | null)[],
+    meta: ReadonlyMap<string, ItemNameMeta>
+): Map<string, string> {
+    const known = new Set<string>();
+    for (const item of catalog) {
+        if (item?.n) known.add(item.n);
+    }
+    const keys = new Map<string, string>();
+    for (const name of known) {
+        keys.set(name, itemNameLocalizationKey(name, meta, known));
+    }
+    return keys;
+}
+
+export function collectMobLocalizationKeys(mobs: readonly {n?: string}[]): string[] {
+    const tags = new Set<string>();
+    for (const mob of mobs) {
+        if (mob.n) tags.add(mob.n);
+    }
+    return [...tags];
+}
+
+export function parseExpeditionRefs(raw: any): ExpeditionRef[] {
+    const arr = raw?.expeditions?.expedition;
+    if (!arr) return [];
+    const list = Array.isArray(arr) ? arr : [arr];
+    const refs: ExpeditionRef[] = [];
+    for (const exp of list) {
+        const cluster = exp?.['@cluster'];
+        const title = exp?.mission?.['@title'];
+        if (typeof cluster === 'string' && typeof title === 'string' && cluster && title) {
+            refs.push({cluster, title});
+        }
+    }
+    return refs;
+}
+
+/**
+ * Cluster id -> expedition mission title tuid.
+ * Match the expedition `@cluster` to the world file stem, or to `<clusterId>_...`.
+ * Skip a cluster when those rules point at more than one title.
+ */
+export function expeditionTitleByCluster(
+    clusters: readonly ClusterRef[],
+    expeditions: readonly ExpeditionRef[]
+): Map<string, string> {
+    const out = new Map<string, string>();
+    for (const cluster of clusters) {
+        const stem = cluster.file.replace(/\.cluster\.xml$/, '');
+        const titles = new Set<string>();
+        for (const exp of expeditions) {
+            if (exp.cluster === stem || exp.cluster.startsWith(`${cluster.id}_`)) {
+                titles.add(exp.title);
+            }
+        }
+        if (titles.size === 1) out.set(cluster.id, [...titles][0]);
+    }
+    return out;
+}
+
+function sortedRecord(entries: Iterable<[string, string]>): Record<string, string> {
+    const obj: Record<string, string> = {};
+    const pairs = [...entries].sort((a, b) => (a[0] < b[0] ? -1 : a[0] > b[0] ? 1 : 0));
+    for (const [key, value] of pairs) obj[key] = value;
+    return obj;
+}
+
+export function buildZhNameTables(args: {
+    mobTags: readonly string[];
+    itemKeys: ReadonlyMap<string, string>;
+    zoneIds: readonly string[];
+    expeditionTitleById: ReadonlyMap<string, string>;
+    localization: ReadonlyMap<string, LangPair>;
+}): ZhNameTables {
+    const mobs: [string, string][] = [];
+    for (const tag of args.mobTags) {
+        const zh = args.localization.get(tag)?.zh;
+        if (zh) mobs.push([tag, zh]);
+    }
+
+    const items: [string, string][] = [];
+    for (const [uniqueName, tuid] of args.itemKeys) {
+        const zh = args.localization.get(tuid)?.zh;
+        if (zh) items.push([uniqueName, zh]);
+    }
+
+    const zones: [string, string][] = [];
+    for (const id of args.zoneIds) {
+        const generic = args.localization.get(`@GENERIC_CLUSTER_${id}`)?.zh;
+        const expeditionTuid = args.expeditionTitleById.get(id);
+        const expeditionZh = expeditionTuid ? args.localization.get(expeditionTuid)?.zh : undefined;
+        const zh = generic || expeditionZh;
+        if (zh) zones.push([id, zh]);
+    }
+
+    return {
+        mobs: sortedRecord(mobs),
+        items: sortedRecord(items),
+        zones: sortedRecord(zones),
+    };
+}
+
+function zoneLocalizationTuid(id: string, expeditionTitleById: ReadonlyMap<string, string>, localization: ReadonlyMap<string, LangPair>): string | undefined {
+    const generic = `@GENERIC_CLUSTER_${id}`;
+    if (localization.get(generic)?.zh) return generic;
+    const expeditionTuid = expeditionTitleById.get(id);
+    if (expeditionTuid && localization.get(expeditionTuid)?.zh) return expeditionTuid;
+    return undefined;
+}
+
+/** Seeded shuffle so the spot-check lines in the update log are stable across runs. */
+export function seededSample<T>(items: readonly T[], count: number, seed: number): T[] {
+    const copy = items.slice();
+    let state = seed >>> 0;
+    const rand = () => {
+        state = (Math.imul(1664525, state) + 1013904223) >>> 0;
+        return state / 0x100000000;
+    };
+    for (let i = copy.length - 1; i > 0; i--) {
+        const j = Math.floor(rand() * (i + 1));
+        const swap = copy[i];
+        copy[i] = copy[j];
+        copy[j] = swap;
+    }
+    return copy.slice(0, Math.min(count, copy.length));
+}
+
+// ============================================================================
+// Zone Processing
 // ============================================================================
 
 function getPvpType(type: string): PvpType {
@@ -347,7 +593,7 @@ function extractTier(file: string): number {
     return tierMatch ? parseInt(tierMatch[1], 10) : 0;
 }
 
-async function processWorldJson(): Promise<{ success: boolean, zonesCount: number }> {
+async function processWorldJson(): Promise<{ success: boolean, zonesCount: number, zones: Record<string, ZoneInfo> }> {
     const worldJsonUrl = `${GITHUB_RAW_BASE}/cluster/world.json`;
     const outputPath = path.join(OUTPUT_DIR, 'zones.json');
 
@@ -356,7 +602,7 @@ async function processWorldJson(): Promise<{ success: boolean, zonesCount: numbe
     const res = await downloadFile(worldJsonUrl);
     if (res.status !== DownloadStatus.SUCCESS || !res.buffer) {
         console.error(`❌ Failed to download world.json: ${res.message}`);
-        return {success: false, zonesCount: 0};
+        return {success: false, zonesCount: 0, zones: {}};
     }
 
     console.log(`✅ Downloaded world.json (${res.size})`);
@@ -367,7 +613,7 @@ async function processWorldJson(): Promise<{ success: boolean, zonesCount: numbe
 
         if (!Array.isArray(clusters)) {
             console.error('❌ Invalid world.json structure: clusters.cluster is not an array');
-            return {success: false, zonesCount: 0};
+            return {success: false, zonesCount: 0, zones: {}};
         }
 
         const zones: Record<string, ZoneInfo> = {};
@@ -415,10 +661,10 @@ async function processWorldJson(): Promise<{ success: boolean, zonesCount: numbe
         }
         console.log(`   🛡️ Safe: ${pvpCounts.safe} | 🔶 Yellow: ${pvpCounts.yellow} | ⚔️ Red: ${pvpCounts.red} | 💀 Black: ${pvpCounts.black}`);
 
-        return {success: true, zonesCount: Object.keys(zones).length};
+        return {success: true, zonesCount: Object.keys(zones).length, zones};
     } catch (error) {
         console.error(`❌ Failed to parse world.json: ${error}`);
-        return {success: false, zonesCount: 0};
+        return {success: false, zonesCount: 0, zones: {}};
     }
 }
 
@@ -438,7 +684,7 @@ async function downloadAndMinify<T>(
     filename: string,
     minifyFn: (data: any) => T,
     outputFilename: string
-): Promise<ProcessResult> {
+): Promise<ProcessResult & {data?: T}> {
     const url = `${GITHUB_RAW_BASE}/${filename}`;
     const outputPath = path.join(OUTPUT_DIR, outputFilename);
 
@@ -471,7 +717,8 @@ async function downloadAndMinify<T>(
             success: true,
             originalSize,
             minifiedSize,
-            itemCount: count
+            itemCount: count,
+            data: minified,
         };
     } catch (error) {
         console.error(`❌ Failed to process ${filename}: ${error}`);
@@ -486,7 +733,7 @@ function formatSize(bytes: number): string {
 }
 
 
-async function downloadAndMinifyItems(): Promise<ProcessResult> {
+async function downloadAndMinifyItems(): Promise<ProcessResult & {items?: (MinifiedItem | null)[], raw?: any}> {
     const url = `${GITHUB_RAW_BASE}/items.json`;
     const outputPath = path.join(OUTPUT_DIR, 'items.min.json');
 
@@ -518,11 +765,107 @@ async function downloadAndMinifyItems(): Promise<ProcessResult> {
             originalSize,
             minifiedSize,
             itemCount: nonNullCount,
+            items: minified,
+            raw: rawData,
         };
     } catch (error) {
         console.error(`❌ Failed to process items.json: ${error}`);
         return {name: 'items.json', success: false, originalSize, minifiedSize: 0};
     }
+}
+
+function logNameSamples(
+    label: string,
+    table: Record<string, string>,
+    englishOf: (key: string) => string | undefined,
+    count: number
+): void {
+    const keys = seededSample(Object.keys(table), count, 20261111);
+    console.log(`   ${label} sample (${keys.length}):`);
+    for (const key of keys) {
+        const en = englishOf(key) ?? '';
+        console.log(`     ${key} | ${en} | ${table[key]}`);
+    }
+}
+
+async function writeZhNames(input: {
+    items: (MinifiedItem | null)[];
+    itemsJsonRaw: any;
+    mobs: MinifiedMob[];
+    zones: Record<string, ZoneInfo>;
+}): Promise<ProcessResult> {
+    const outputPath = path.join(OUTPUT_DIR, 'names.zh-CN.min.json');
+    console.log('\n🀄 Building names.zh-CN.min.json from localization.xml ZH-CN...');
+
+    const expRes = await downloadFile(`${GITHUB_RAW_BASE}/expeditions.json`);
+    if (expRes.status !== DownloadStatus.SUCCESS || !expRes.buffer) {
+        console.error(`❌ Failed to download expeditions.json: ${expRes.message}`);
+        return {name: 'localization.xml', success: false, originalSize: 0, minifiedSize: 0};
+    }
+    const expeditions = parseExpeditionRefs(JSON.parse(expRes.buffer.toString('utf-8')));
+
+    const mobTags = collectMobLocalizationKeys(input.mobs);
+    const itemMeta = buildItemNameMeta(input.itemsJsonRaw);
+    const itemKeys = collectItemLocalizationKeys(input.items, itemMeta);
+    const zoneIds = Object.keys(input.zones);
+    const clusterRefs = zoneIds.map((id) => ({id, file: input.zones[id].file}));
+    const expeditionTitleById = expeditionTitleByCluster(clusterRefs, expeditions);
+
+    const wanted = new Set<string>();
+    for (const tag of mobTags) wanted.add(tag);
+    for (const tuid of itemKeys.values()) wanted.add(tuid);
+    for (const id of zoneIds) wanted.add(`@GENERIC_CLUSTER_${id}`);
+    for (const tuid of expeditionTitleById.values()) wanted.add(tuid);
+
+    console.log(`📥 Downloading localization.xml for ZH-CN names...`);
+    const locRes = await downloadFile(`${GITHUB_RAW_BASE}/localization.xml`);
+    if (locRes.status !== DownloadStatus.SUCCESS || !locRes.buffer) {
+        console.error(`❌ Failed to download localization.xml: ${locRes.message}`);
+        return {name: 'localization.xml', success: false, originalSize: 0, minifiedSize: 0};
+    }
+    const originalSize = locRes.buffer.length;
+    console.log(`✅ Downloaded localization.xml (${formatSize(originalSize)})`);
+
+    const localization = parseLocalizationXml(locRes.buffer.toString('utf-8'), wanted);
+    const tables = buildZhNameTables({
+        mobTags,
+        itemKeys,
+        zoneIds,
+        expeditionTitleById,
+        localization,
+    });
+
+    const json = JSON.stringify(tables);
+    fs.writeFileSync(outputPath, json);
+    const minifiedSize = Buffer.byteLength(json);
+    const mobCount = Object.keys(tables.mobs).length;
+    const itemCount = Object.keys(tables.items).length;
+    const zoneCount = Object.keys(tables.zones).length;
+
+    console.log(`💾 Saved names.zh-CN.min.json (${formatSize(minifiedSize)}, ${minifiedSize} bytes)`);
+    console.log(`   mobs: ${mobCount} | items: ${itemCount} | zones: ${zoneCount}`);
+
+    const hideoutTuid = '@ITEMS_UNIQUE_HIDEOUT';
+    const hideout = localization.get(hideoutTuid);
+    console.log(`   ${hideoutTuid} EN-US: ${hideout?.en ?? '(missing EN-US)'} | ZH-CN: ${hideout?.zh ?? '(missing ZH-CN)'}`);
+    console.log(`   items["UNIQUE_HIDEOUT"]: ${tables.items.UNIQUE_HIDEOUT ?? '(not included)'}`);
+
+    logNameSamples('mobs', tables.mobs, (key) => localization.get(key)?.en, 5);
+    logNameSamples('items', tables.items, (key) => localization.get(itemKeys.get(key) ?? '')?.en, 5);
+    logNameSamples('zones', tables.zones, (key) => {
+        const tuid = zoneLocalizationTuid(key, expeditionTitleById, localization);
+        const official = tuid ? localization.get(tuid)?.en : undefined;
+        const radar = input.zones[key]?.name;
+        return official && radar && official !== radar ? `${radar} / ${official}` : (radar || official);
+    }, 3);
+
+    return {
+        name: 'localization.xml',
+        success: true,
+        originalSize,
+        minifiedSize,
+        itemCount: mobCount + itemCount + zoneCount,
+    };
 }
 
 async function main() {
@@ -539,8 +882,10 @@ async function main() {
     const results: ProcessResult[] = [];
 
     // Process each data file with minification
-    results.push(await downloadAndMinifyItems());
-    results.push(await downloadAndMinify('mobs.json', minifyMobs, 'mobs.min.json'));
+    const itemsResult = await downloadAndMinifyItems();
+    results.push(itemsResult);
+    const mobsResult = await downloadAndMinify('mobs.json', minifyMobs, 'mobs.min.json');
+    results.push(mobsResult);
     results.push(await downloadAndMinify('spells.json', minifySpells, 'spells.min.json'));
     results.push(await downloadAndMinify('harvestables.json', minifyHarvestables, 'harvestables.min.json'));
 
@@ -553,6 +898,18 @@ async function main() {
         minifiedSize: 0,
         itemCount: zonesResult.zonesCount
     });
+
+    if (itemsResult.success && itemsResult.items && itemsResult.raw && mobsResult.success && mobsResult.data && zonesResult.success) {
+        results.push(await writeZhNames({
+            items: itemsResult.items,
+            itemsJsonRaw: itemsResult.raw,
+            mobs: mobsResult.data,
+            zones: zonesResult.zones,
+        }));
+    } else {
+        console.error('❌ Skipped names.zh-CN.min.json because items, mobs, or zones failed');
+        results.push({name: 'localization.xml', success: false, originalSize: 0, minifiedSize: 0});
+    }
 
     // Summary
     console.log('\n' + '='.repeat(60));
@@ -589,13 +946,21 @@ async function main() {
     console.log(`\n   ⏱️ Completed in ${elapsed}s`);
     console.log(`   ✅ Success: ${successCount} | ❌ Failed: ${failCount}`);
 
-    console.log('\n💡 Note: localization.json and items.xml are fetched on-demand by icon download scripts');
+    console.log('\n💡 Note: items.xml is still fetched on-demand by the icon download scripts');
     console.log('='.repeat(60) + '\n');
 
     process.exit(failCount > 0 ? 1 : 0);
 }
 
-main().catch(err => {
-    console.error('❌ Fatal error:', err);
-    process.exit(1);
-});
+function isDirectExecution(): boolean {
+    const entry = process.argv[1];
+    if (!entry) return false;
+    return import.meta.url === pathToFileURL(entry).href;
+}
+
+if (isDirectExecution()) {
+    main().catch(err => {
+        console.error('❌ Fatal error:', err);
+        process.exit(1);
+    });
+}
