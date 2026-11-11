@@ -109,7 +109,7 @@ describe('settings page actions', () => {
 
         expect(localStorage.getItem('settingPlayersHostile')).toBeNull();
         expect(localStorage.getItem('settingIgnoreList')).toBe('["Griefer"]');
-        expect(window.toast.success).toHaveBeenCalledWith('Settings reset successfully');
+        expect(window.toast.success).toHaveBeenCalledWith('设置已重置。');
         expect(reload).not.toHaveBeenCalled();
         vi.advanceTimersByTime(500);
         expect(reload).toHaveBeenCalledTimes(1);

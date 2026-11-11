@@ -118,7 +118,7 @@ const KINDS = {
                 const remove = document.createElement('button');
                 remove.type = 'button';
                 remove.className = 'btn btn-ghost btn-xs text-error opacity-0 group-hover:opacity-100 focus:opacity-100 transition-opacity';
-                remove.textContent = 'Remove';
+                remove.textContent = '移除';
                 row.append(label, remove);
                 return row;
             });

@@ -35,7 +35,7 @@ describe('cluster defaults on a profile without cluster keys', () => {
     });
 
     // @verified 2026-09-24: cluster radius 30 m and minimum size 2 are the registry defaults.
-    test('clusters use radius 30 and minimum size 2 and the info box shows R:30m', async () => {
+    test('clusters use radius 30 and minimum size 2 and the info box shows 半径:30m', async () => {
         const harvestablesHandler = new HarvestablesHandler(null);
         EventRouter.init({handlers: {harvestablesHandler}, map: {id: -1}, radarRenderer: null});
         const fixture = await loadFixture('harvestables', 'batch-spawn');
@@ -56,6 +56,6 @@ describe('cluster defaults on a profile without cluster keys', () => {
         expect(candidates.length).toBeGreaterThan(0);
         expect([radius, minSize]).toEqual([30, 2]);
         expect(detectClusters.mock.results[0].value.length).toBeGreaterThan(0);
-        expect(texts.some(text => text.includes('R:30m'))).toBe(true);
+        expect(texts.some(text => text.includes('半径:30m'))).toBe(true);
     });
 });

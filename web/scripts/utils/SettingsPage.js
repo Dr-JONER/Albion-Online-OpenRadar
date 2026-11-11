@@ -25,7 +25,7 @@ export async function initSettingsPage({root, signal}) {
     byId('confirmResetSettings')?.addEventListener('click', () => {
         resetAllSettings(settingsSync);
         modal.close();
-        window.toast?.success('Settings reset successfully');
+        window.toast?.success('设置已重置。');
         setTimeout(() => location.reload(), 500);
     }, {signal});
 

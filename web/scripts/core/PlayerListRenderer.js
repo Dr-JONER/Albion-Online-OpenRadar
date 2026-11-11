@@ -87,7 +87,7 @@ function renderPlayerCard(player, threatType = null) {
                 const baseName = item.name.split('@')[0];
                 const iconPath = `/images/Items/${baseName}.webp`;
 
-                return `<div class="inline-flex items-center gap-1.5 phone-landscape:gap-0.5 bg-base-100/60 px-2 py-1 phone-landscape:px-1 phone-landscape:py-0.5 rounded hover:bg-base-100/80 transition-colors" title="${baseName} - ${tierStr}${enchantStr} - IP: ${ipStr}"><img src="${iconPath}" alt="${baseName}" class="w-6 h-6 phone-landscape:w-4 phone-landscape:h-4 object-contain drop-shadow-sm bg-base-200/50 rounded" loading="lazy"><span class="text-[10px] phone-landscape:text-[9px] font-mono font-semibold text-base-content/80">${tierStr}${enchantStr}</span>${ipStr ? `<span class="text-[9px] font-mono font-bold text-warning">${ipStr}</span>` : ''}</div>`;
+                return `<div class="inline-flex items-center gap-1.5 phone-landscape:gap-0.5 bg-base-100/60 px-2 py-1 phone-landscape:px-1 phone-landscape:py-0.5 rounded hover:bg-base-100/80 transition-colors" title="${baseName} - ${tierStr}${enchantStr} - 物品强度: ${ipStr}"><img src="${iconPath}" alt="${baseName}" class="w-6 h-6 phone-landscape:w-4 phone-landscape:h-4 object-contain drop-shadow-sm bg-base-200/50 rounded" loading="lazy"><span class="text-[10px] phone-landscape:text-[9px] font-mono font-semibold text-base-content/80">${tierStr}${enchantStr}</span>${ipStr ? `<span class="text-[9px] font-mono font-bold text-warning">${ipStr}</span>` : ''}</div>`;
             }).filter(Boolean).join('');
 
             if (items) {
