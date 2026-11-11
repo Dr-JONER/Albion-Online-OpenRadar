@@ -20,7 +20,7 @@ function formatElapsedTime(detectedAt) {
 function renderGuildBadge(guildName) {
     return guildName
         ? `<span class="text-[11px] font-mono font-medium text-warning bg-warning/10 px-1.5 py-0.5 rounded border border-warning/20">[${guildName}]</span>`
-        : '<span class="text-[10px] text-base-content/30 italic">No Guild</span>';
+        : '<span class="text-[10px] text-base-content/30 italic">无公会</span>';
 }
 
 function renderAllianceBadge(allianceName) {
@@ -32,18 +32,18 @@ function renderAllianceBadge(allianceName) {
 function renderPlayerTypeBadge(effectiveType, factionCityName) {
     if (effectiveType === 'passive') {
         return {
-            badge: `<span class="text-[9px] font-mono font-semibold text-success bg-success/10 px-1.5 py-0.5 rounded border border-success/25 uppercase tracking-wide">Passive</span>`,
+            badge: `<span class="text-[9px] font-mono font-semibold text-success bg-success/10 px-1.5 py-0.5 rounded border border-success/25 uppercase tracking-wide">和平</span>`,
             color: 'success'
         };
     } else if (effectiveType === 'faction') {
-        const cityLabel = factionCityName ? `⚔ ${factionCityName}` : 'Faction';
+        const cityLabel = factionCityName ? `⚔ ${factionCityName}` : '阵营';
         return {
             badge: `<span class="text-[9px] font-mono font-semibold text-info bg-info/10 px-1.5 py-0.5 rounded border border-info/25 uppercase tracking-wide">${cityLabel}</span>`,
             color: 'info'
         };
     }
     return {
-        badge: `<span class="text-[9px] font-mono font-semibold text-error bg-error/10 px-1.5 py-0.5 rounded border border-error/25 uppercase tracking-wide">Hostile</span>`,
+        badge: `<span class="text-[9px] font-mono font-semibold text-error bg-error/10 px-1.5 py-0.5 rounded border border-error/25 uppercase tracking-wide">敌对</span>`,
         color: 'error'
     };
 }
@@ -61,12 +61,12 @@ function renderPlayerCard(player, threatType = null) {
     // Average IP badge
     const avgItemPower = player.getAverageItemPower?.();
     const ipBadge = avgItemPower && window.settingsSync?.getBool('settingPlayersShowTotalIp')
-        ? `<span class="text-[11px] font-mono font-bold text-warning bg-gradient-to-br from-warning/15 to-warning/5 px-2 py-0.5 rounded border border-warning/30">IP ${avgItemPower}</span>`
+        ? `<span class="text-[11px] font-mono font-bold text-warning bg-gradient-to-br from-warning/15 to-warning/5 px-2 py-0.5 rounded border border-warning/30">强度 ${avgItemPower}</span>`
         : '';
 
     // Mounted badge
     const mountedBadge = player.mounted && window.settingsSync?.getBool('settingPlayersShowMounted')
-        ? `<span class="text-[9px] font-mono font-semibold text-primary bg-primary/10 px-1.5 py-0.5 rounded border border-primary/25 uppercase tracking-wide">Mounted</span>`
+        ? `<span class="text-[9px] font-mono font-semibold text-primary bg-primary/10 px-1.5 py-0.5 rounded border border-primary/25 uppercase tracking-wide">骑乘</span>`
         : '';
 
     // Equipment section

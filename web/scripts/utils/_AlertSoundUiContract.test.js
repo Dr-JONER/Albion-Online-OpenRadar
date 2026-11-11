@@ -29,7 +29,7 @@ describe('alert sound ui contract', () => {
         const root = mountPage('players');
         const select = root.querySelector('select[data-setting="settingAlertSoundFile"]');
         expect(root.querySelector(`label[for="${select.id}"]`)).not.toBeNull();
-        expect(root.querySelector('#previewSound').getAttribute('aria-label')).toBe('Play the selected alert sound');
+        expect(root.querySelector('#previewSound').getAttribute('aria-label')).toBe('播放所选警报声');
         expect(playersTemplate).toContain("querySelector('#previewSound').addEventListener('click', () => alertSound.preview()");
         expect(playersTemplate).not.toMatch(/'change',\s*\(\)\s*=>\s*alertSound\.preview/);
     });

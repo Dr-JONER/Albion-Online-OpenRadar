@@ -13,71 +13,71 @@ const LAYOUTS_DIR = join(ROOT, 'internal/templates/layouts');
 const CONTROL_COUNT_EXCEPTIONS = {settingPlayersDetect: 2, settingUiSidebarCollapsed: 0};
 
 const LABELS = {
-    settingRadarZoom: 'Zoom',
-    settingRadarSize: 'Max size',
-    settingRadarFitToScreen: 'Fit to screen',
-    settingRadarIconSize: 'Icon size',
-    settingRadarMapBackground: 'Map background',
-    settingRadarHudZoneInfo: 'Zone info box',
-    settingRadarHudStats: 'Stats box',
-    settingRadarPlayersBeside: 'Players beside radar',
-    settingRadarKeepAwake: 'Keep screen awake',
-    settingRadarResourceCount: 'Resource count',
-    settingRadarResourceDistance: 'Resource distance',
-    settingRadarResourceTierBadges: 'Resource tier color badges',
-    settingRadarResourceClusters: 'Resource clusters',
-    settingRadarClusterRadius: 'Cluster radius (m)',
-    settingRadarClusterMinSize: 'Min nodes per cluster',
-    settingUiRadarSettingsOpen: 'Radar settings',
-    settingPlayersDetect: 'Detect players',
-    settingPlayersShowGuild: 'Show Guild Name',
-    settingPlayersShowTotalIp: 'Show Total IP',
-    settingPlayersShowMounted: 'Show Mounted Status',
-    settingPlayersShowHealthBars: 'Show Health Bars',
-    settingEnemiesShowHealthBars: 'Show Health Bars',
-    settingResourcesShowHealthBars: 'Show Health Bars',
+    settingRadarZoom: '缩放',
+    settingRadarSize: '最大尺寸',
+    settingRadarFitToScreen: '适应屏幕',
+    settingRadarIconSize: '图标大小',
+    settingRadarMapBackground: '地图背景',
+    settingRadarHudZoneInfo: '区域信息',
+    settingRadarHudStats: '统计框',
+    settingRadarPlayersBeside: '玩家列表靠右',
+    settingRadarKeepAwake: '保持屏幕常亮',
+    settingRadarResourceCount: '资源数量',
+    settingRadarResourceDistance: '资源距离',
+    settingRadarResourceTierBadges: '资源等阶色块',
+    settingRadarResourceClusters: '资源聚集',
+    settingRadarClusterRadius: '聚集半径（米）',
+    settingRadarClusterMinSize: '每组最少点数',
+    settingUiRadarSettingsOpen: '雷达设置',
+    settingPlayersDetect: '检测玩家',
+    settingPlayersShowGuild: '显示公会名',
+    settingPlayersShowTotalIp: '显示总物品强度',
+    settingPlayersShowMounted: '显示骑乘状态',
+    settingPlayersShowHealthBars: '显示生命条',
+    settingEnemiesShowHealthBars: '显示生命条',
+    settingResourcesShowHealthBars: '显示生命条',
     settingEnemiesChampion: 'Champion',
-    settingDebugEnemiesUnidentified: 'Show unidentified enemies',
-    settingDebugPlayersIds: 'Show Player IDs',
-    settingLogToServer: 'Save browser logs',
-    settingDebugBackendLogs: 'Save backend logs',
-    settingDebugWsCoalescing: 'Merge entity updates per frame',
+    settingDebugEnemiesUnidentified: '显示未识别敌人',
+    settingDebugPlayersIds: '显示玩家 ID',
+    settingLogToServer: '保存浏览器日志',
+    settingDebugBackendLogs: '保存后端日志',
+    settingDebugWsCoalescing: '每帧合并实体更新',
 };
 
-const NOT_DETECTED = 'Not detected yet: no mob is classified as this type today.';
-const CATEGORY_TIP = 'Keep DEBUG and INFO entries of this area. WARN and above ignore this filter.';
+const NOT_DETECTED = '目前还没有怪物被归入这一类。';
+const CATEGORY_TIP = '保留该分类的 DEBUG 与 INFO。WARN 及以上不受此过滤影响。';
 
 const TOOLTIPS = {
-    settingRadarSize: 'Width and height in pixels, shrunk on small windows. Ignored while Fit to screen is on.',
-    settingRadarFitToScreen: 'Largest square that fits the window, up to 1200 px, next to the player list when the list sits beside. Overrides Max size.',
-    settingRadarHudZoneInfo: 'Top-left box with the zone name, tier and a PvP marker.',
-    settingRadarHudStats: 'Top-right box: resource and mob counts, plus player count when detection is on.',
-    settingRadarPlayersBeside: 'Shows the player list to the right of the radar when the window is wide enough.',
-    settingRadarKeepAwake: 'Stops the screen from sleeping while the radar page is open. Uses more battery on phones.',
-    settingRadarResourceCount: 'Estimated count from size/tier, bonuses excluded. Fishing shows spawned/total fish.',
-    settingRadarResourceDistance: 'Distance in meters: hidden under 2 m, green under 10 m, yellow 10-19 m, orange 20 m+.',
-    settingRadarResourceTierBadges: 'Colored squares by type instead of icons, with tier. Living creatures get a gold border.',
-    settingRadarClusterRadius: 'Groups same-type, same-tier resources within this range. Default 30 m.',
-    settingRadarClusterMinSize: 'Smallest group drawn as a cluster. Default: 2.',
-    settingRadarResourceClusters: 'Circles groups of nearby same-type nodes, with count and distance. Only nodes your filters show are grouped.',
-    settingPlayersDetect: 'Tracks players in range. Off: no player list, no player counts, no flash, border or sound.',
-    settingPlayersShowTotalIp: 'Average item power of the gear the player wears.',
-    settingPlayersHostile: 'Players flagged hostile, meaning everyone in black zones. Does not affect alerts.',
-    settingAlertFlash: 'Flashes on threats: hostile players in yellow/red, anyone in black. Ignored names excluded.',
-    settingAlertSound: 'Plays the alert sound on the radar PC, same trigger rule as Screen Flash. Ignored names never trigger it.',
-    settingAlertBorder: 'Pulses a red border around the radar while a threat is in range. Ignored names do not count.',
-    settingAlertSoundCooldown: 'Minimum delay between two alert sounds. At zero, every alert plays.',
-    settingEnemiesChampion: 'Champion mobs, and solo mobs in random dungeons.',
-    settingEnemiesMinHealthFilter: 'Hides enemies whose max HP is below the minimum, unidentified ones included. Drones, Mists bosses, events and living resources are exempt.',
+    settingRadarSize: '宽和高的像素。窗口较小时会缩小。开启“适应屏幕”后忽略此项。',
+    settingRadarFitToScreen: '取窗口里能放下的最大正方形，上限 1200 像素；玩家列表在旁边时与它并排。会覆盖“最大尺寸”。',
+    settingRadarHudZoneInfo: '左上角显示区域名称、等阶和 PvP 标记。',
+    settingRadarHudStats: '右上角显示资源和怪物数量；开启玩家检测时也显示玩家数量。',
+    settingRadarPlayersBeside: '窗口够宽时，把玩家列表放在雷达右侧。',
+    settingRadarKeepAwake: '雷达页打开时阻止屏幕休眠。手机会更耗电。',
+    settingRadarResourceCount: '按体型和等阶估算，不含加成。钓鱼显示已刷新数量和总数。',
+    settingRadarResourceDistance: '单位为米：2 米内隐藏，10 米内为绿色，10 到 19 米为黄色，20 米及以上为橙色。',
+    settingRadarResourceTierBadges: '按类型用色块代替图标，并标出等阶。活体生物带金色边框。',
+    settingRadarClusterRadius: '把此范围内、类型和等阶相同的资源分到一组。默认 30 米。',
+    settingRadarClusterMinSize: '少于此数量就不画成一组。默认 2。',
+    settingRadarResourceClusters: '把附近同类资源点圈起来，并显示数量和距离。只分组当前过滤下可见的点。',
+    settingPlayersDetect: '追踪范围内的玩家。关闭后没有玩家列表、人数、闪屏、边框和声音。',
+    settingPlayersShowTotalIp: '玩家当前穿戴装备的平均物品强度。',
+    settingPlayersHostile: '显示敌对标记的玩家；黑区里的玩家都算敌对。不影响警报。',
+    settingAlertFlash: '出现威胁时闪屏：黄区或红区的敌对玩家，以及黑区中的任何人。已忽略的名字除外。',
+    settingAlertSound: '在运行雷达的电脑上播放警报声，触发规则与“屏幕闪烁”相同。已忽略的名字不会触发。',
+    settingAlertBorder: '范围内有威胁时，雷达周围闪红色边框。已忽略的名字不计入。',
+    settingAlertSoundCooldown: '两次警报声之间的最短间隔。设为 0 则每次都播放。',
+    settingEnemiesChampion: 'Champion 怪物，以及随机地下城里的单人怪物。',
+    settingEnemiesMinHealthFilter: '隐藏最大生命低于该值的敌人，包括未识别的。Avalonian Drones、迷雾 Boss、活动怪和活体资源不受影响。',
     settingEnemiesEvent: NOT_DETECTED,
-    settingDebugEnemiesUnidentified: 'Shows enemies missing from mob data, usually new post-update mobs. Type filters skip them.',
-    settingDebugResourcesTypeId: 'Draws the internal type ID on resource nodes and living resources (debug).',
-    settingDebugResourcesDbName: 'Shows the DB name mapped from the wire type ID (debug, for offset verification).',
-    settingDebugWsCoalescing: 'Keeps only the latest move, health and regen update per entity each frame.',
-    settingDebugBackendLogs: 'Logs one line per game event to logs/sessions/. Only changeable on the radar PC.',
-    settingDebugPcapRecording: 'Records UDP 5056 traffic to logs/captures/, one file per interface. PC-only setting.',
-    settingLogToServer: 'Saves filtered entries on the radar PC in logs/debug/. Errors are also copied to logs/errors/.',
-    settingLogLevel: 'The lowest level shown, though DEBUG and INFO also need their category on. OFF disables all logging.',
+    settingDebugEnemiesUnidentified: '显示怪物数据里没有的敌人，通常是更新后新增的怪物。类型过滤不会作用于它们。',
+    settingDebugResourcesTypeId: '在资源点和活体资源上绘制内部类型 ID（调试）。',
+    settingDebugResourcesDbName: '显示由线路类型 ID 映射出的数据库名（调试，用于核对偏移）。',
+    settingDebugWsCoalescing: '每个实体每帧只保留最新的移动、生命和回复更新。',
+    settingDebugBackendLogs: '把每条游戏事件记一行到 logs/sessions/。只能在运行雷达的电脑上修改。',
+    settingDebugPcapRecording: '把 UDP 5056 流量录到 logs/captures/，每个网卡一个文件。仅限本机。',
+    settingLogToServer: '把过滤后的条目保存到雷达电脑的 logs/debug/。错误还会复制到 logs/errors/。',
+    settingLogLevel: '显示的最低级别。DEBUG 和 INFO 还需要打开对应分类。OFF 关闭全部日志。',
     ...Object.fromEntries(SETTINGS.filter(entry => entry.key.startsWith('settingLogCategory')).map(entry => [entry.key, CATEGORY_TIP])),
 };
 
@@ -391,14 +391,21 @@ describe('stale logging links', () => {
 describe('settings page', () => {
     const template = templateOf('settings');
     const root = pages.find(page => page.name === 'settings').root;
-    const DEBUG_GROUPS = ['Enemies', 'Resources', 'Players', 'Mists', 'Network traffic', 'Backend logs'];
+    const DEBUG_GROUPS = [
+        ['怪物', 'Enemies'],
+        ['资源', 'Resources'],
+        ['玩家', 'Players'],
+        ['迷雾', 'Mists'],
+        ['网络流量', 'Network traffic'],
+        ['后端日志', 'Backend logs'],
+    ];
 
     function keysOf(group) {
         return [...group.querySelectorAll('input')].map(el => el.dataset.setting ?? el.id).sort();
     }
 
     test('reads as logging, debug, network and reset options', () => {
-        expect(normalized(root.querySelector('h1 + p'))).toBe('Logging, debug, network and reset options.');
+        expect(normalized(root.querySelector('h1 + p'))).toBe('日志、调试、网络和重置选项。');
     });
 
     test('holds no Display card, no Clear Cache, no throttle and no Rendering category', () => {
@@ -417,8 +424,8 @@ describe('settings page', () => {
     test('the Logging banner tells where backend and browser errors are saved', () => {
         const logging = root.querySelector('[data-setting="settingUiSettingsLoggingOpen"]').closest('.collapse');
         const banner = normalized(logging.querySelector('.collapse-content p'));
-        expect(banner).toContain('Backend errors are always saved to logs/errors/.');
-        expect(banner).toContain('Browser errors are saved only while this browser sends its logs (Settings > Logging > "Save browser logs").');
+        expect(banner).toContain('后端错误始终保存到 logs/errors/。');
+        expect(banner).toContain('只有本浏览器正在发送自己的日志时，才会保存浏览器错误（设置 > 日志 > “保存浏览器日志”）。');
         expect(template).not.toContain('Errors are always saved on the backend side');
     });
 
@@ -432,8 +439,8 @@ describe('settings page', () => {
         const debug = root.querySelector('[data-setting="settingUiSettingsDebugOpen"]').closest('.collapse')
             .querySelector('.collapse-content');
         const groups = [...debug.querySelectorAll('section')];
-        expect(groups.map(group => normalized(group.querySelector('h3')))).toEqual(DEBUG_GROUPS);
-        for (const [index, name] of DEBUG_GROUPS.entries()) {
+        expect(groups.map(group => normalized(group.querySelector('h3')))).toEqual(DEBUG_GROUPS.map(([label]) => label));
+        for (const [index, [, name]] of DEBUG_GROUPS.entries()) {
             const expected = SETTINGS.filter(entry => entry.page === 'Settings' && entry.section === `Debug > ${name}`)
                 .map(entry => entry.key).sort();
             expect(keysOf(groups[index]), name).toEqual(expected);
@@ -444,7 +451,7 @@ describe('settings page', () => {
     // @verified 2026-10-10: the Export hint lists registry settings, UI state and backend logging values, without the ignore list.
     test('the Export hint lists the registry settings, UI state and backend logging values, without the ignore list', () => {
         expect(normalized(root.querySelector('#downloadLogsBtn').nextElementSibling))
-            .toBe('Downloads registry settings, UI state and backend logging values as JSON. The ignore list is not included.');
+            .toBe('将注册表设置、界面状态和后端日志开关下载为 JSON。不包含忽略列表。');
     });
 });
 
@@ -605,7 +612,7 @@ describe('settings control tile contract', () => {
     });
 
     test('every range has one minus, one plus and one reset button on its key, named after its label', () => {
-        const SHAPES = [['nudge', '-1', 'minus', 'Decrease'], ['nudge', '1', 'plus', 'Increase'], ['reset', null, 'rotate-ccw', 'Reset']];
+        const SHAPES = [['nudge', '-1', 'minus', '减小'], ['nudge', '1', 'plus', '增大'], ['reset', null, 'rotate-ccw', '重置']];
         const drift = pages.flatMap(({name, root}) => [...root.querySelectorAll('input[type="range"][data-setting]')].flatMap(el => {
             const key = el.dataset.setting;
             const noun = registryEntry(key).label.toLowerCase();
@@ -617,7 +624,7 @@ describe('settings control tile contract', () => {
                 const glyph = button.querySelector('i[data-lucide]');
                 const ok = button.tagName === 'BUTTON' && button.type === 'button'
                     && ['btn', 'btn-ghost', 'btn-xs', 'btn-square'].every(c => button.classList.contains(c))
-                    && button.getAttribute('aria-label') === `${verb} ${noun}` && button.title === `${verb} ${noun}`
+                    && button.getAttribute('aria-label') === `${verb}${noun}` && button.title === `${verb}${noun}`
                     && glyph?.dataset.lucide === icon && glyph.classList.contains('w-3') && glyph.classList.contains('h-3')
                     && !button.closest('label') && !button.hasAttribute('tabindex')
                     && button.parentElement === el.parentElement;
@@ -848,7 +855,7 @@ describe('radar settings panel sections', () => {
             const icon = h3.querySelector('i[data-lucide]').dataset.lucide;
             return NAV_ICONS[name] && NAV_ICONS[name] !== icon ? [`${name}: ${icon} vs ${NAV_ICONS[name]}`] : [];
         });
-        expect(Object.keys(NAV_ICONS)).toContain('Resources');
+        expect(Object.keys(NAV_ICONS)).toContain('资源');
         expect(drift).toEqual([]);
     });
 });
@@ -865,7 +872,7 @@ describe('settings debug sections', () => {
             const icon = h3.querySelector('i[data-lucide]').dataset.lucide;
             return icon === NAV_ICONS[normalized(h3)] ? [] : [`${normalized(h3)}: ${icon} vs ${NAV_ICONS[normalized(h3)]}`];
         });
-        expect(named.map(normalized)).toEqual(['Enemies', 'Resources', 'Players']);
+        expect(named.map(normalized)).toEqual(['怪物', '资源', '玩家']);
         expect(drift).toEqual([]);
     });
 
@@ -895,7 +902,7 @@ describe('collapse title icons', () => {
             .filter(({label}) => NAV_ICONS[label]));
         const drift = named.filter(({title, label}) => title.firstElementChild?.dataset.lucide !== NAV_ICONS[label])
             .map(({name, label}) => `${name}: ${label}`);
-        expect(named.map(({name, label}) => `${name}: ${label}`)).toEqual(['chests: Chests']);
+        expect(named.map(({name, label}) => `${name}: ${label}`)).toEqual(['chests: 宝箱']);
         expect(drift).toEqual([]);
     });
 });
@@ -919,8 +926,8 @@ describe('card sub-groups', () => {
             .filter(grid => SUBGROUP_GRIDS.includes(layoutOf(grid)))
             .some(grid => [...grid.children].filter(child => headings.some(h3 => child.contains(h3))).length >= 2))
             .map(({title}) => title);
-        expect(cards.map(({title}) => title)).toEqual(['chests: Mists', 'chests: Dungeons', 'players: Alerts', 'radar: Radar settings',
-            'settings: Logging', 'settings: Debug']);
+        expect(cards.map(({title}) => title)).toEqual(['chests: 迷雾', 'chests: 地下城', 'players: 警报', 'radar: 雷达设置',
+            'settings: 日志', 'settings: 调试']);
         expect(drift).toEqual([]);
     });
 });

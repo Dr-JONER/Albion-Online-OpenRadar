@@ -143,7 +143,7 @@ describe('RadarRenderer HUD gates and zone guard', () => {
 
         const texts = ctx.calls.filter(c => c[0] === 'fillText').map(c => String(c[1]));
         expect(texts.some(text => text.includes(zonesDatabase.getZone('0317').name))).toBe(false);
-        expect(texts.some(text => text.includes('resources'))).toBe(true);
+        expect(texts.some(text => text.includes('资源'))).toBe(true);
     });
 
     // @verified 2026-09-24: stats alone off leaves the zone box (10,10) intact.
@@ -172,7 +172,7 @@ describe('RadarRenderer HUD gates and zone guard', () => {
     // @verified 2026-10-10: pcap-derived. players/spawn.json in zone 0317 holds 8 players; Max players caps the
     // list cards, not the HUD count, and detection off drops the players row.
     test.each([
-        [true, '👥 8 players'],
+        [true, '👥 8 玩家'],
         [false, null],
     ])('stats box after players/spawn.json with detection %s and Max players 2 reads %s', async (detect, row) => {
         mockSettings({
@@ -190,8 +190,8 @@ describe('RadarRenderer HUD gates and zone guard', () => {
 
         const texts = ctx.calls.filter(c => c[0] === 'fillText').map(c => String(c[1]));
         if (row) expect(texts).toContain(row);
-        else expect(texts.some(text => text.includes('players'))).toBe(false);
-        expect(texts.some(text => text.includes('resources'))).toBe(true);
+        else expect(texts.some(text => text.includes('玩家'))).toBe(false);
+        expect(texts.some(text => text.includes('资源'))).toBe(true);
     });
 
     // @verified 2026-09-24: the -1 sentinel (cold-start map object) must never draw the zone box.
