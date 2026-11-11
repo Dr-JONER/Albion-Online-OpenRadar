@@ -5,6 +5,7 @@ import {HarvestablesDatabase} from './HarvestablesDatabase.js';
 import {MobsDatabase} from './MobsDatabase.js';
 import {ZonesDatabase} from './ZonesDatabase.js';
 import {LocalizationDatabase} from './LocalizationDatabase.js';
+import {ChineseNames} from './ChineseNames.js';
 
 // A browser still holding a `max-age=604800` entry from an older release never
 // asks the server. Only a "no-cache" request cache mode revalidates a fresh entry.
@@ -16,6 +17,7 @@ const databases = [
     ['MobsDatabase', () => new MobsDatabase(), '/ao-bin-dumps/mobs.min.json'],
     ['ZonesDatabase', () => new ZonesDatabase(), '/ao-bin-dumps/zones.json'],
     ['LocalizationDatabase', () => new LocalizationDatabase(), '/ao-bin-dumps/localization.json'],
+    ['ChineseNames', () => new ChineseNames(), '/ao-bin-dumps/names.zh-CN.min.json'],
 ];
 
 describe('game data is fetched with a revalidating cache mode', () => {

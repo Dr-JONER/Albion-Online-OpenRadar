@@ -4,6 +4,7 @@ import settingsSync from "./SettingsSync.js";
 import zonesDatabase from "../data/ZonesDatabase.js";
 import {shouldRenderLivingResource, shouldRenderStaticResource} from './LivingResourceFilter.js';
 import {EnemyType} from '../handlers/MobsHandler.js';
+import {displayZoneName} from '../data/ChineseNames.js';
 
 export class RadarRenderer {
     constructor(dependencies) {
@@ -380,7 +381,8 @@ export class RadarRenderer {
         if (!this.map || this.map.id === -1) return;
 
         const zone = zonesDatabase.getZone(this.map.id);
-        const zoneName = zone?.name || this.map.id;
+        const englishName = zone?.name || String(this.map.id);
+        const zoneName = displayZoneName(this.map.id, englishName) || englishName;
         const tier = zone?.tier ? `T${zone.tier}` : '';
         const pvpType = zone?.pvpType || 'safe';
 

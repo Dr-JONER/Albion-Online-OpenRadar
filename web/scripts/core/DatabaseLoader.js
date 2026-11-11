@@ -5,6 +5,7 @@ import {ItemsDatabase} from '../data/ItemsDatabase.js';
 import {SpellsDatabase} from '../data/SpellsDatabase.js';
 import {HarvestablesDatabase} from '../data/HarvestablesDatabase.js';
 import {MobsDatabase} from '../data/MobsDatabase.js';
+import {ChineseNames} from '../data/ChineseNames.js';
 import zonesDatabase from '../data/ZonesDatabase.js';
 import {CATEGORIES} from '../constants/LoggerConstants.js';
 
@@ -17,7 +18,8 @@ window.databaseLoadingProgress = {
     spells: false,
     harvestables: false,
     mobs: false,
-    zones: false
+    zones: false,
+    chineseNames: false
 };
 
 async function loadDatabaseWithRetry(database, path, name, ...extraArgs) {
@@ -95,6 +97,7 @@ export async function load() {
     const spellsDatabase = new SpellsDatabase();
     const harvestablesDatabase = new HarvestablesDatabase();
     const mobsDatabase = new MobsDatabase();
+    const chineseNames = new ChineseNames();
 
     const promises = [
         loadDatabaseWithRetry(itemsDatabase, '/ao-bin-dumps/items.min.json', 'Items')
@@ -140,6 +143,15 @@ export async function load() {
                     window.zonesDatabase = zonesDatabase;
                 }
                 return result;
+            }),
+
+        loadDatabaseWithRetry(chineseNames, '/ao-bin-dumps/names.zh-CN.min.json', 'ChineseNames')
+            .then(result => {
+                if (result.success) {
+                    window.databaseLoadingProgress.chineseNames = true;
+                    window.chineseNames = result.database;
+                }
+                return result;
             })
     ];
 
@@ -147,11 +159,10 @@ export async function load() {
 
     // Check for failures
     const failures = results.filter(r => !r.success);
-    if (failures.length > 0) {
-        failures.forEach(failure => {
-            showDatabaseError(failure.name, failure.error);
-        });
-    }
+    // Names are optional: a missing table leaves the original English on screen.
+    failures.filter(failure => failure.name !== 'ChineseNames').forEach(failure => {
+        showDatabaseError(failure.name, failure.error);
+    });
 
     // Mark as ready even if some databases failed (graceful degradation)
     window.databasesReady = true;

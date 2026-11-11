@@ -3,6 +3,7 @@ import {EnemyType, getSettingNameForEnemyType} from "../handlers/MobsHandler.js"
 import {CATEGORIES} from "../constants/LoggerConstants.js";
 import settingsSync from "../utils/SettingsSync.js";
 import {shouldRenderLivingResource} from "../utils/LivingResourceFilter.js";
+import {displayMobName} from "../data/ChineseNames.js";
 
 export class MobsDrawing extends DrawingUtils
 {
@@ -192,20 +193,21 @@ export class MobsDrawing extends DrawingUtils
                 currentYOffset += offset12; // Move down for next element
             }
 
-            // Display Name (localized if available, fallback to technical name)
+            // Display Name: official ZH-CN when the names table has this tag,
+            // otherwise the existing English localization or the technical name.
             if (settingsSync.getBool("settingDebugEnemiesName") && mobOne.name &&
                 mobOne.type >= EnemyType.Enemy && mobOne.type <= EnemyType.Events) {
-                // Try to get localized name first
-                let displayName = null;
+                let englishName = null;
                 if (mobOne.namelocatag && window.localizationDatabase) {
-                    displayName = window.localizationDatabase.getText(mobOne.namelocatag);
+                    englishName = window.localizationDatabase.getText(mobOne.namelocatag);
                 }
 
-                // Fallback to technical name if no localization available
-                if (!displayName) {
-                    // Simplify the technical name by removing tier prefix
-                    displayName = mobOne.name.replace(/^T\d+_MOB_/, '').replace(/_/g, ' ');
+                if (!englishName) {
+                    englishName = mobOne.name.replace(/^T\d+_MOB_/, '').replace(/_/g, ' ');
                 }
+
+                let displayName = displayMobName(mobOne.namelocatag, englishName);
+                if (!displayName) displayName = englishName;
 
                 // Limit length to prevent overcrowding
                 if (displayName.length > 20) {
