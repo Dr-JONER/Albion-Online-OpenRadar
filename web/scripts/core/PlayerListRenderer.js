@@ -1,6 +1,8 @@
 // PlayerListRenderer.js - Player list UI rendering
 // Extracted from Utils.js during Phase 1B refactor
 
+import {displayFactionCityName, displayItemName} from '../data/ChineseNames.js';
+
 // Render cache for incremental updates
 let lastRenderedPlayerIds = new Map();
 
@@ -29,6 +31,14 @@ function renderAllianceBadge(allianceName) {
         : '';
 }
 
+function escapeHTML(value) {
+    return String(value)
+        .replace(/&/g, '&amp;')
+        .replace(/"/g, '&quot;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;');
+}
+
 function renderPlayerTypeBadge(effectiveType, factionCityName) {
     if (effectiveType === 'passive') {
         return {
@@ -36,7 +46,7 @@ function renderPlayerTypeBadge(effectiveType, factionCityName) {
             color: 'success'
         };
     } else if (effectiveType === 'faction') {
-        const cityLabel = factionCityName ? `⚔ ${factionCityName}` : '阵营';
+        const cityLabel = factionCityName ? `⚔ ${escapeHTML(factionCityName)}` : '阵营';
         return {
             badge: `<span class="text-[9px] font-mono font-semibold text-info bg-info/10 px-1.5 py-0.5 rounded border border-info/25 uppercase tracking-wide">${cityLabel}</span>`,
             color: 'info'
@@ -54,7 +64,9 @@ function renderPlayerCard(player, threatType = null) {
     const allianceBadge = renderAllianceBadge(player.allianceName);
 
     // Determine player type
-    const factionCityName = player.isFactionPlayer?.() ? FACTION_CITIES[player.faction] : null;
+    const factionCityName = player.isFactionPlayer?.()
+        ? displayFactionCityName(player.faction, FACTION_CITIES[player.faction] || '')
+        : null;
     const effectiveType = threatType || (player.isPassive?.() ? 'passive' : player.isFactionPlayer?.() ? 'faction' : 'hostile');
     const {badge: playerTypeBadge, color: playerTypeColor} = renderPlayerTypeBadge(effectiveType, factionCityName);
 
@@ -85,9 +97,11 @@ function renderPlayerCard(player, threatType = null) {
                 const enchantStr = item.enchant > 0 ? `.${item.enchant}` : '';
                 const ipStr = item.itempower > 0 ? item.itempower : '';
                 const baseName = item.name.split('@')[0];
+                const displayName = displayItemName(item.name, baseName) || baseName;
+                const safeName = escapeHTML(displayName);
                 const iconPath = `/images/Items/${baseName}.webp`;
 
-                return `<div class="inline-flex items-center gap-1.5 phone-landscape:gap-0.5 bg-base-100/60 px-2 py-1 phone-landscape:px-1 phone-landscape:py-0.5 rounded hover:bg-base-100/80 transition-colors" title="${baseName} - ${tierStr}${enchantStr} - 物品强度: ${ipStr}"><img src="${iconPath}" alt="${baseName}" class="w-6 h-6 phone-landscape:w-4 phone-landscape:h-4 object-contain drop-shadow-sm bg-base-200/50 rounded" loading="lazy"><span class="text-[10px] phone-landscape:text-[9px] font-mono font-semibold text-base-content/80">${tierStr}${enchantStr}</span>${ipStr ? `<span class="text-[9px] font-mono font-bold text-warning">${ipStr}</span>` : ''}</div>`;
+                return `<div class="inline-flex items-center gap-1.5 phone-landscape:gap-0.5 bg-base-100/60 px-2 py-1 phone-landscape:px-1 phone-landscape:py-0.5 rounded hover:bg-base-100/80 transition-colors" title="${safeName} - ${tierStr}${enchantStr} - 物品强度: ${ipStr}"><img src="${iconPath}" alt="${safeName}" class="w-6 h-6 phone-landscape:w-4 phone-landscape:h-4 object-contain drop-shadow-sm bg-base-200/50 rounded" loading="lazy"><span class="text-[10px] phone-landscape:text-[9px] font-mono font-semibold text-base-content/80">${tierStr}${enchantStr}</span>${ipStr ? `<span class="text-[9px] font-mono font-bold text-warning">${ipStr}</span>` : ''}</div>`;
             }).filter(Boolean).join('');
 
             if (items) {

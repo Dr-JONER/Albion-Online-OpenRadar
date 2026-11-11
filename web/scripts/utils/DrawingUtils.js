@@ -1,9 +1,24 @@
 import {CATEGORIES} from "../constants/LoggerConstants.js";
 import imageCache from "./ImageCache.js";
 import settingsSync from "./SettingsSync.js";
+import {displayResourceName} from "../data/ChineseNames.js";
 
 const SCALE_FACTOR = 1.0;
 const BASE_ZOOM = 4;
+
+function sharedResourceEnchant(cluster) {
+    const resources = cluster?.resources;
+    if (!Array.isArray(resources) || resources.length === 0) return 0;
+    let enchant = null;
+    for (const resource of resources) {
+        const raw = resource?.charges ?? resource?.enchantmentLevel ?? 0;
+        const value = Number(raw);
+        const next = Number.isInteger(value) && value > 0 ? value : 0;
+        if (enchant === null) enchant = next;
+        else if (enchant !== next) return 0;
+    }
+    return enchant ?? 0;
+}
 
 export class DrawingUtils {
     constructor() {
@@ -421,8 +436,7 @@ export class DrawingUtils {
         let totalStacks = 0; for (const r of cluster.resources) { const size = (r.size !== undefined && !isNaN(parseInt(r.size))) ? parseInt(r.size) : 1; const tier = (r.tier !== undefined && !isNaN(parseInt(r.tier))) ? parseInt(r.tier) : 4; totalStacks += this.calculateRealResources(size, tier); }
 
         const countText = `×${cluster.count}`;
-        const clusterLabels = {Fiber: '纤维', Hide: '兽皮', Wood: '木材', Ore: '矿石', Rock: '石材', Resource: '资源'};
-        const typeText = clusterLabels[cluster.type] || cluster.type || '';
+        const typeText = displayResourceName(cluster.type || '', cluster.tier, sharedResourceEnchant(cluster));
         const tierText = (cluster.tier !== undefined && cluster.tier !== null) ? `T${cluster.tier}` : '';
 
         const distanceGameUnits = Math.round(this.calculateDistance(cluster.x || 0, cluster.y || 0, 0, 0));
