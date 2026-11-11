@@ -215,8 +215,8 @@ func TestBootInterfacesIPMissWithNothingToPickWarns(t *testing.T) {
 		t.Fatalf("got %+v, want nothing", got)
 	}
 	if !slices.ContainsFunc(warns, func(m string) bool {
-		return strings.Contains(m, "10.0.0.99") && !strings.Contains(m, "auto-select")
+		return strings.Contains(m, "10.0.0.99") && strings.Contains(m, "未找到默认网卡") && !strings.Contains(m, "自动选择")
 	}) {
-		t.Errorf("no -ip miss warning without auto-select claim, got %v", warns)
+		t.Errorf("no -ip miss warning that says the default interface was not found, got %v", warns)
 	}
 }

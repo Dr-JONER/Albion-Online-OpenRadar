@@ -66,12 +66,12 @@ func loadClips(soundsFS fs.FS) (map[string][]byte, error) {
 		}
 		raw, err := fs.ReadFile(soundsFS, name)
 		if err != nil {
-			logger.PrintWarn("SND", "sound skipped, %s: %v", name, err)
+			logger.PrintWarn("SND", "已跳过声音 %s: %v", name, err)
 			continue
 		}
 		pcm, err := decodeWAV(raw)
 		if err != nil {
-			logger.PrintWarn("SND", "sound skipped, %s: %v", name, err)
+			logger.PrintWarn("SND", "已跳过声音 %s: %v", name, err)
 			continue
 		}
 		clips[name] = pcm

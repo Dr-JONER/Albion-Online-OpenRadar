@@ -107,11 +107,11 @@ func (ws *WebSocketHandler) flushBatch() {
 
 	data, err := encodeBatch(batch)
 	if err != nil {
-		logger.PrintWarn("WS", "batch marshal failed: %v (batch size=%d, DROPPED)", err, msgCount)
+		logger.PrintWarn("WS", "批次序列化失败: %v（批次大小=%d，已丢弃）", err, msgCount)
 		// Try to identify which message failed by marshaling each one individually.
 		for i, m := range batch {
 			if _, err := json.Marshal(m, wsJSONOptions); err != nil {
-				logger.PrintWarn("WS", "  offending message[%d]: %v (type=%T, value=%+v)", i, err, m, m)
+				logger.PrintWarn("WS", "  问题消息[%d]: %v（类型=%T，值=%+v）", i, err, m, m)
 			}
 		}
 		return
@@ -171,7 +171,7 @@ func (ws *WebSocketHandler) handleConnection(w http.ResponseWriter, r *http.Requ
 	// Upgrade connection first (doesn't require lock)
 	conn, err := ws.upgrader.Upgrade(w, r, nil)
 	if err != nil {
-		logger.PrintError("WS", "Upgrade error: %v", err)
+		logger.PrintError("WS", "升级失败: %v", err)
 		return
 	}
 
@@ -180,14 +180,14 @@ func (ws *WebSocketHandler) handleConnection(w http.ResponseWriter, r *http.Requ
 	if len(ws.clients) >= MaxWebSocketClients {
 		ws.clientsMu.Unlock()
 		_ = conn.Close()
-		logger.PrintWarn("WS", "Connection rejected: max clients reached (%d)", MaxWebSocketClients)
+		logger.PrintWarn("WS", "连接被拒绝: 已达客户端上限（%d）", MaxWebSocketClients)
 		return
 	}
 	ws.clients[conn] = true
 	clientCount := len(ws.clients)
 	ws.clientsMu.Unlock()
 
-	logger.PrintInfo("WS", "Client connected (%d total)", clientCount)
+	logger.PrintInfo("WS", "客户端已连接（共 %d 个）", clientCount)
 
 	// Handle incoming messages (for logs from client)
 	go ws.handleMessages(conn)
@@ -201,7 +201,7 @@ func (ws *WebSocketHandler) handleMessages(conn *websocket.Conn) {
 		clientCount := len(ws.clients)
 		ws.clientsMu.Unlock()
 		_ = conn.Close()
-		logger.PrintInfo("WS", "Client disconnected (%d remaining)", clientCount)
+		logger.PrintInfo("WS", "客户端已断开（剩余 %d 个）", clientCount)
 	}()
 
 	for {
@@ -212,7 +212,7 @@ func (ws *WebSocketHandler) handleMessages(conn *websocket.Conn) {
 				websocket.CloseGoingAway,
 				websocket.CloseAbnormalClosure,
 			) {
-				logger.PrintError("WS", "Read error: %v", err)
+				logger.PrintError("WS", "读取错误: %v", err)
 			}
 			break
 		}

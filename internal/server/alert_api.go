@@ -28,7 +28,7 @@ func NewAlertAPI(player AlertPlayer) *AlertAPI {
 func newAlertPlayer(soundsFS fs.FS) AlertPlayer {
 	player, err := audio.NewPlayer(soundsFS)
 	if err != nil {
-		logger.PrintWarn("SND", "alert sound unavailable on this machine: %v", err)
+		logger.PrintWarn("SND", "本机无法播放警报声音: %v", err)
 		return nil
 	}
 	return player

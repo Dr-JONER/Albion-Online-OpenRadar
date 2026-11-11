@@ -79,23 +79,23 @@ func NewHTTPServer(
 	// Extract subdirectories from embed.FS (they include the folder path)
 	imagesFS, err := fs.Sub(images, "web/images")
 	if err != nil {
-		fmt.Printf("[HTTP] Warning: failed to load images: %v\n", err)
+		fmt.Printf("[HTTP] 警告: 加载图片失败: %v\n", err)
 	}
 	scriptsFS, err := fs.Sub(scripts, "web/scripts")
 	if err != nil {
-		fmt.Printf("[HTTP] Warning: failed to load scripts: %v\n", err)
+		fmt.Printf("[HTTP] 警告: 加载脚本失败: %v\n", err)
 	}
 	dataFS, err := fs.Sub(data, "web/ao-bin-dumps")
 	if err != nil {
-		fmt.Printf("[HTTP] Warning: failed to load data: %v\n", err)
+		fmt.Printf("[HTTP] 警告: 加载数据失败: %v\n", err)
 	}
 	soundsFS, err := fs.Sub(sounds, "web/sounds")
 	if err != nil {
-		fmt.Printf("[HTTP] Warning: failed to load sounds: %v\n", err)
+		fmt.Printf("[HTTP] 警告: 加载声音失败: %v\n", err)
 	}
 	stylesFS, err := fs.Sub(styles, "web/styles")
 	if err != nil {
-		fmt.Printf("[HTTP] Warning: failed to load styles: %v\n", err)
+		fmt.Printf("[HTTP] 警告: 加载样式失败: %v\n", err)
 	}
 
 	// Initialize template engine (required)
@@ -103,7 +103,7 @@ func NewHTTPServer(
 	if err != nil {
 		return nil, fmt.Errorf("failed to load templates: %w", err)
 	}
-	fmt.Println("[HTTP] Template engine initialized (SSR mode)")
+	fmt.Println("[HTTP] 模板引擎已初始化（SSR 模式）")
 
 	s := &HTTPServer{
 		port:      port,
@@ -147,7 +147,7 @@ func NewHTTPServerDev(
 	if err != nil {
 		return nil, fmt.Errorf("failed to load templates: %w", err)
 	}
-	fmt.Println("[HTTP] Template engine initialized (dev mode with hot reload)")
+	fmt.Println("[HTTP] 模板引擎已初始化（开发模式，支持热重载）")
 
 	s := &HTTPServer{
 		port:      port,
@@ -264,7 +264,7 @@ func (s *HTTPServer) renderPage(w http.ResponseWriter, r *http.Request, page str
 	}
 
 	if err != nil {
-		s.logger.Error("http", "render", fmt.Sprintf("Failed to render page %s: %v", page, err), nil)
+		s.logger.Error("http", "render", fmt.Sprintf("页面 %s 渲染失败: %v", page, err), nil)
 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 		return
 	}

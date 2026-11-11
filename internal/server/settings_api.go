@@ -85,7 +85,7 @@ func (a *SettingsAPI) handlePost(w http.ResponseWriter, r *http.Request) {
 	if patch.PcapRecording != nil && a.recorder != nil {
 		if *patch.PcapRecording {
 			if err := a.recorder.StartRecording(a.captureDir); err != nil {
-				logger.PrintWarn("PKT", "pcap recording could not start: %v", err)
+				logger.PrintWarn("PKT", "pcap 录制无法启动: %v", err)
 				msg := "pcap recording failed: " + err.Error()
 				if pErr := capture.MutateConfig(a.appDir, func(cfg *capture.Config) {
 					cfg.Logging.PcapRecording = false
@@ -97,7 +97,7 @@ func (a *SettingsAPI) handlePost(w http.ResponseWriter, r *http.Request) {
 			}
 		} else {
 			if err := a.recorder.StopRecording(); err != nil {
-				logger.PrintWarn("PKT", "pcap recording could not stop: %v", err)
+				logger.PrintWarn("PKT", "pcap 录制无法停止: %v", err)
 			}
 		}
 	}

@@ -61,7 +61,7 @@ type App struct {
 func main() {
 	cfg := parseFlags()
 	if cfg.showVersion {
-		fmt.Printf("OpenRadar v%s (built: %s)\n", Version, BuildTime)
+		fmt.Printf("OpenRadar v%s（构建于 %s）\n", Version, BuildTime)
 		return
 	}
 
@@ -72,14 +72,14 @@ func main() {
 		if !shouldRestart {
 			break
 		}
-		fmt.Println("Restarting...")
+		fmt.Println("正在重启...")
 	}
 }
 
 func runApp(cfg Config) bool {
 	appDir, err := os.Getwd()
 	if err != nil {
-		exitWithError("Failed to get working directory", err)
+		exitWithError("无法获取工作目录", err)
 	}
 
 	ctx, cancel := context.WithCancel(context.Background())
@@ -87,11 +87,11 @@ func runApp(cfg Config) bool {
 	allIfaces, err := capture.EnumerateInterfaces()
 	if err != nil {
 		cancel()
-		exitWithError("Failed to enumerate interfaces", err)
+		exitWithError("无法枚举网卡", err)
 	}
 
 	if _, mErr := capture.MigrateIPTxt(appDir, capture.ResolveByIP); mErr != nil {
-		logger.PrintWarn("NET", "ip.txt migration failed: %v", mErr)
+		logger.PrintWarn("NET", "ip.txt 迁移失败: %v", mErr)
 	}
 
 	cfgPersisted, _ := capture.ReadConfig(appDir)
@@ -103,20 +103,20 @@ func runApp(cfg Config) bool {
 	if err != nil {
 		cancel()
 		manager.Close(context.Background())
-		exitWithError("Failed to create app", err)
+		exitWithError("无法创建应用", err)
 	}
 
 	if err := manager.Reconfigure(target); err != nil {
-		logger.PrintWarn("NET", "Some interfaces failed to open: %v", err)
+		logger.PrintWarn("NET", "部分网卡打开失败: %v", err)
 	}
 
 	if cfgPersisted.Logging.PcapRecording {
 		if err := manager.StartRecording(pcapCaptureDir); err != nil {
-			logger.PrintWarn("PKT", "pcap recording could not start: %v", err)
+			logger.PrintWarn("PKT", "pcap 录制无法启动: %v", err)
 			if pErr := capture.MutateConfig(appDir, func(cfg *capture.Config) {
 				cfg.Logging.PcapRecording = false
 			}); pErr != nil {
-				logger.PrintWarn("PKT", "pcapRecording could not be reset in network.json: %v", pErr)
+				logger.PrintWarn("PKT", "无法在 network.json 中重置 pcapRecording: %v", pErr)
 			}
 		}
 	}
@@ -155,8 +155,8 @@ func runInterface(runDashboard func() (tea.Model, error), waitForSignal func()) 
 	model, err := runDashboard()
 	if err != nil {
 		logger.ClearLogCallback()
-		logger.PrintWarn("APP", "Console dashboard unavailable: %v", err)
-		logger.PrintInfo("APP", "Radar still running, press Ctrl+C to stop")
+		logger.PrintWarn("APP", "控制台面板不可用: %v", err)
+		logger.PrintInfo("APP", "雷达仍在运行，按 Ctrl+C 停止")
 		waitForSignal()
 		return false
 	}
@@ -182,9 +182,9 @@ type Config struct {
 
 func parseFlags() Config {
 	cfg := Config{}
-	flag.BoolVar(&cfg.devMode, "dev", false, "Run in development mode (read files from disk)")
-	flag.BoolVar(&cfg.showVersion, "version", false, "Show version information")
-	flag.StringVar(&cfg.ipAddr, "ip", "", "Capture on the interface holding this IP, this run only (network.json is not written)")
+	flag.BoolVar(&cfg.devMode, "dev", false, "以开发模式运行（从磁盘读取文件）")
+	flag.BoolVar(&cfg.showVersion, "version", false, "显示版本信息")
+	flag.StringVar(&cfg.ipAddr, "ip", "", "仅本次在持有该 IP 的网卡上抓包（不写入 network.json）")
 	flag.Parse()
 	return cfg
 }
@@ -248,10 +248,10 @@ func createHTTPServer(
 	allIfaces []capture.NetworkInterface,
 ) (*server.HTTPServer, error) {
 	if devMode {
-		logger.PrintInfo("MODE", "Development mode: reading files from disk")
+		logger.PrintInfo("MODE", "开发模式: 从磁盘读取文件")
 		return server.NewHTTPServerDev(serverPort, appDir, wsHandler, log, version, buildTime, mgr, allIfaces, mgr, pcapCaptureDir)
 	}
-	logger.PrintInfo("MODE", "Production mode: using embedded assets")
+	logger.PrintInfo("MODE", "生产模式: 使用内嵌资源")
 	return server.NewHTTPServer(
 		serverPort,
 		assets.Images,
@@ -274,30 +274,30 @@ func createHTTPServer(
 
 func (app *App) startServers() {
 	app.logger.PrintSessionInfo()
-	logger.PrintInfo("APP", "Starting servers...")
+	logger.PrintInfo("APP", "正在启动服务...")
 
 	app.wg.Go(func() {
 		app.httpRunning.Store(true)
 		if err := app.httpServer.Start(); err != nil && !errors.Is(err, http.ErrServerClosed) &&
 			app.ctx.Err() == nil {
-			logger.PrintError("HTTP", "Error: %v", err)
+			logger.PrintError("HTTP", "错误: %v", err)
 		}
 		app.httpRunning.Store(false)
 	})
 
 	time.Sleep(100 * time.Millisecond)
 
-	logger.PrintSuccess("HTTP", "Server: http://localhost:%d", serverPort)
+	logger.PrintSuccess("HTTP", "服务器: http://localhost:%d", serverPort)
 	for _, ip := range capture.LANAddresses() {
-		logger.PrintSuccess("HTTP", "Server: http://%s:%d  (LAN)", ip, serverPort)
+		logger.PrintSuccess("HTTP", "服务器: http://%s:%d  (局域网)", ip, serverPort)
 	}
 	logger.PrintSuccess("WS", "WebSocket: ws://localhost:%d/ws", serverPort)
 	for _, ip := range capture.LANAddresses() {
-		logger.PrintSuccess("WS", "WebSocket: ws://%s:%d/ws  (LAN)", ip, serverPort)
+		logger.PrintSuccess("WS", "WebSocket: ws://%s:%d/ws  (局域网)", ip, serverPort)
 	}
-	logger.PrintInfo("PKT", "Listening for Albion packets on UDP port 5056...")
+	logger.PrintInfo("PKT", "正在监听 Albion 的 UDP 5056 数据包...")
 	for _, s := range app.captureManager.State().Active {
-		logger.PrintInfo("NET", "Capturing on %s [%s]", s.Description, s.Address)
+		logger.PrintInfo("NET", "正在抓包: %s [%s]", s.Description, s.Address)
 	}
 }
 
@@ -361,7 +361,7 @@ func (app *App) handlePacket(payload []byte) {
 func (app *App) onPhotonParseError(reason string, payloadLen int) {
 	n := app.packetsErrors.Add(1)
 	if n%100 == 1 {
-		logger.PrintWarn("PKT", "Parsing errors: %d (last reason: %s, payload len: %d)",
+		logger.PrintWarn("PKT", "解析错误: %d（最近原因: %s，载荷长度: %d）",
 			n, reason, payloadLen)
 	}
 }
@@ -389,12 +389,12 @@ func (app *App) onPhotonResponse(resp *photon.OperationResponse) {
 func (app *App) onPhotonEncrypted() {
 	n := app.packetsEncrypted.Add(1)
 	if n%100 == 1 {
-		logger.PrintWarn("PKT", "Encrypted traffic seen (%d so far, ignored)", n)
+		logger.PrintWarn("PKT", "已发现加密流量（累计 %d，已忽略）", n)
 	}
 }
 
 func (app *App) shutdown() {
-	logger.PrintInfo("APP", "Shutting down gracefully...")
+	logger.PrintInfo("APP", "正在平稳关闭...")
 
 	ctx, cancel := context.WithTimeout(context.Background(), shutdownTimeout)
 	defer cancel()
@@ -404,7 +404,7 @@ func (app *App) shutdown() {
 	app.logger.Stop()
 
 	if err := app.httpServer.Shutdown(ctx); err != nil {
-		logger.PrintError("HTTP", "Shutdown error: %v", err)
+		logger.PrintError("HTTP", "关闭出错: %v", err)
 	}
 
 	done := make(chan struct{})
@@ -415,9 +415,9 @@ func (app *App) shutdown() {
 
 	select {
 	case <-done:
-		logger.PrintSuccess("APP", "Shutdown complete")
+		logger.PrintSuccess("APP", "已关闭")
 	case <-ctx.Done():
-		logger.PrintWarn("APP", "Shutdown timed out")
+		logger.PrintWarn("APP", "关闭超时")
 	}
 }
 
@@ -455,13 +455,13 @@ func bootInterfaces(appDir string, persisted capture.Config, all []capture.Netwo
 	target = autoPickDefaults(all)
 	if len(target) == 0 {
 		if ipOverride != "" {
-			logger.PrintWarn("NET", "No interface matches -ip %s and no default interface was found.", ipOverride)
+			logger.PrintWarn("NET", "没有网卡匹配 -ip %s，且未找到默认网卡。", ipOverride)
 		}
 		return target
 	}
 
 	if ipOverride != "" {
-		logger.PrintWarn("NET", "No interface matches -ip %s, auto-selecting for this run only.", ipOverride)
+		logger.PrintWarn("NET", "没有网卡匹配 -ip %s，本次仅自动选择。", ipOverride)
 		return target
 	}
 
@@ -472,9 +472,9 @@ func bootInterfaces(appDir string, persisted capture.Config, all []capture.Netwo
 	if err := capture.MutateConfig(appDir, func(cfg *capture.Config) {
 		cfg.CaptureInterfaces = toPersist
 	}); err != nil {
-		logger.PrintWarn("NET", "Could not persist auto-selected interfaces: %v", err)
+		logger.PrintWarn("NET", "无法保存自动选择的网卡: %v", err)
 	}
-	logger.PrintInfo("NET", "Auto-selected %d interface(s). Change in /settings if needed.", len(target))
+	logger.PrintInfo("NET", "已自动选择 %d 个网卡。如需更改，请前往 /settings。", len(target))
 	return target
 }
 
