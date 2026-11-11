@@ -25,10 +25,10 @@ function updateConnectionStatus(status) {
 
     if (window.toast && previousStatus !== status) {
         if (status === 'connected') {
-            window.toast.success('Connected to radar backend');
+            window.toast.success('已连接到雷达后端。');
         } else if (status === 'disconnected' && previousStatus === 'connected' && !isGracefulDisconnect) {
             // Only show "Connection lost" for unexpected disconnects, not graceful navigation
-            window.toast.error('Connection lost');
+            window.toast.error('连接已断开。');
         }
     }
 }

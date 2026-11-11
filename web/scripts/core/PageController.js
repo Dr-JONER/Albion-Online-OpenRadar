@@ -83,7 +83,11 @@ async function initCurrentPage() {
         } catch (error) {
             window.logger?.error(CATEGORIES.SYSTEM, 'PageController_InitError', {page: newPage, error: error.message});
             if (window.toast) {
-                window.toast.error(`Failed to initialize ${newPage} page`);
+                const pageNames = {
+                    radar: '雷达', players: '玩家', resources: '资源', enemies: '怪物',
+                    chests: '宝箱', ignorelist: '忽略列表', settings: '设置',
+                };
+                window.toast.error(`无法初始化${pageNames[newPage] || newPage}页面。`);
             }
         }
     }

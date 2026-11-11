@@ -261,7 +261,7 @@ export async function initRadar() {
 
     } catch (error) {
         window.logger?.error(CATEGORIES.SYSTEM, 'RadarInitFailed', {error: error.message});
-        if (window.toast) window.toast.error('Failed to initialize radar');
+        if (window.toast) window.toast.error('雷达初始化失败。');
         throw error;
     }
 }

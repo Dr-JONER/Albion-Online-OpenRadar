@@ -332,7 +332,7 @@ describe('enemies page', () => {
     test('offers only the All and Clear presets, through data-enemy-preset', () => {
         const presets = [...root.querySelectorAll('[data-enemy-preset]')];
         expect(presets.map(el => el.dataset.enemyPreset)).toEqual(['all', 'clear']);
-        expect(presets.map(el => el.textContent.trim())).toEqual(['All', 'Clear']);
+        expect(presets.map(el => el.textContent.trim())).toEqual(['全选', '清空']);
         expect(template).not.toContain('onclick="applyEnemyPreset');
         expect(template).not.toContain('Mini-Boss+');
         expect(template).not.toMatch(/>\s*Bosses\s*<\/button>/);
@@ -342,7 +342,7 @@ describe('enemies page', () => {
         const display = root.querySelector('[data-setting="settingUiEnemiesDisplayOpen"]').closest('.collapse');
         const links = [...display.querySelector('.collapse-content').lastElementChild.querySelectorAll('a')];
         expect(links.map(a => [a.getAttribute('href'), normalized(a)]))
-            .toEqual([['/settings', 'Settings > Logging'], ['/settings', 'Settings > Debug']]);
+            .toEqual([['/settings', '设置 > 日志'], ['/settings', '设置 > 调试']]);
     });
 
     test('holds no All checkbox and no Debug collapse', () => {

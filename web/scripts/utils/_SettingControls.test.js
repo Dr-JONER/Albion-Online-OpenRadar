@@ -317,7 +317,7 @@ describe('bindSettingControls select', () => {
         const select = root.querySelector('select');
 
         expect([...select.options].map(o => o.value)).toContain('brass.wav');
-        expect([...select.options].find(o => o.value === 'brass.wav').textContent).toBe('Brass');
+        expect([...select.options].find(o => o.value === 'brass.wav').textContent).toBe('铜管');
         expect(select.value).toBe('player.wav');
 
         select.value = 'coin.wav';
@@ -717,14 +717,14 @@ describe('ignorelist page', () => {
         bind(root, newSync());
         const text = root.textContent.replace(/\s+/g, ' ');
 
-        expect(text).toContain('Names on this list never trigger the alert sound, the screen flash or the red border. Ignored players still appear in the player list.');
+        expect(text).toContain('名单中的名字不会触发警报声、屏幕闪烁或红色边框。被忽略的玩家仍会显示在玩家列表里。');
         expect(text).not.toContain("Manage players that won't trigger alerts or be shown on radar.");
         expect(text).not.toContain('A player name, a guild name or an alliance name all work.');
         expect(root.querySelector('[data-setting-label="settingUiIgnoreListAddNameOpen"]').textContent.trim()).toBe('添加名字');
         expect(root.querySelector('[data-setting-label~="settingUiIgnoreListIgnoredNamesOpen"]').textContent.trim()).toBe('已忽略名字');
         expect(root.querySelector('[data-ignore-add]').textContent.trim()).toBe('添加名字');
-        expect(root.querySelector('[data-ignore-input]').placeholder).toBe('Player, guild or alliance name');
-        expect(root.querySelector('[data-ignore-empty]').textContent.trim()).toBe('The ignore list is empty');
+        expect(root.querySelector('[data-ignore-input]').placeholder).toBe('玩家、公会或联盟名字');
+        expect(root.querySelector('[data-ignore-empty]').textContent.trim()).toBe('忽略列表是空的');
         expect(root.querySelector('[data-ignore-items]').textContent).toContain('Treasure Map');
     });
 });

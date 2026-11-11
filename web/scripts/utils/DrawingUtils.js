@@ -421,7 +421,8 @@ export class DrawingUtils {
         let totalStacks = 0; for (const r of cluster.resources) { const size = (r.size !== undefined && !isNaN(parseInt(r.size))) ? parseInt(r.size) : 1; const tier = (r.tier !== undefined && !isNaN(parseInt(r.tier))) ? parseInt(r.tier) : 4; totalStacks += this.calculateRealResources(size, tier); }
 
         const countText = `×${cluster.count}`;
-        const typeText = cluster.type || '';
+        const clusterLabels = {Fiber: '纤维', Hide: '兽皮', Wood: '木材', Ore: '矿石', Rock: '石材', Resource: '资源'};
+        const typeText = clusterLabels[cluster.type] || cluster.type || '';
         const tierText = (cluster.tier !== undefined && cluster.tier !== null) ? `T${cluster.tier}` : '';
 
         const distanceGameUnits = Math.round(this.calculateDistance(cluster.x || 0, cluster.y || 0, 0, 0));
@@ -432,7 +433,7 @@ export class DrawingUtils {
         const clusterRadiusMeters = settingsSync.getNumber("settingRadarClusterRadius");
 
         const line1 = `${countText}${typeText ? ' ' + typeText : ''}${tierText ? ' ' + tierText : ''}`;
-        const line2 = `${stacksText} stacks · ${distText}${clusterRadiusMeters ? ' · R:' + clusterRadiusMeters + 'm' : ''}`;
+        const line2 = `${stacksText} 堆 · ${distText}${clusterRadiusMeters ? ' · 半径:' + clusterRadiusMeters + 'm' : ''}`;
 
         const fontSize1 = this.getScaledFontSize(12, 8);
         const fontSize2 = this.getScaledFontSize(11, 7);
