@@ -64,8 +64,8 @@ func TestFormatCaptureLine(t *testing.T) {
 		in   []CaptureSummary
 		want string
 	}{
-		{"nil", nil, "(awaiting)"},
-		{"empty slice", []CaptureSummary{}, "(awaiting)"},
+		{"nil", nil, "(等待中)"},
+		{"empty slice", []CaptureSummary{}, "(等待中)"},
 		{"one", []CaptureSummary{{Description: "Wi-Fi", Address: "10.0.0.1"}}, "Wi-Fi (10.0.0.1)"},
 		{"two", []CaptureSummary{
 			{Description: "Wi-Fi", Address: "10.0.0.1"},
@@ -92,36 +92,53 @@ func sparkRunes(s string) []rune {
 }
 
 func TestRenderSparkline(t *testing.T) {
-	if got := renderSparkline([]uint64{}, ColorPrimary); got != "" {
+	if got := renderSparkline([]uint64{}, ColorPrimary, sparklineDisplayLen); got != "" {
 		t.Errorf("empty data rendered %q, want empty", got)
 	}
-	if got := sparkRunes(renderSparkline([]uint64{0, 0, 0}, ColorPrimary)); string(got) != "▁▁▁" {
+	if got := sparkRunes(renderSparkline([]uint64{0, 0, 0}, ColorPrimary, sparklineDisplayLen)); string(got) != "▁▁▁" {
 		t.Errorf("all zeros rendered %q, want ▁▁▁", string(got))
 	}
-	if got := sparkRunes(renderSparkline([]uint64{0, 4, 8}, ColorPrimary)); string(got) != "▁▄█" {
+	if got := sparkRunes(renderSparkline([]uint64{0, 4, 8}, ColorPrimary, sparklineDisplayLen)); string(got) != "▁▄█" {
 		t.Errorf("0,4,8 rendered %q, want ▁▄█", string(got))
 	}
-	if got := sparkRunes(renderSparkline([]float64{2.5, 5}, ColorPrimary)); string(got) != "▄█" {
+	if got := sparkRunes(renderSparkline([]float64{2.5, 5}, ColorPrimary, sparklineDisplayLen)); string(got) != "▄█" {
 		t.Errorf("2.5,5 rendered %q, want ▄█", string(got))
 	}
 	long := make([]uint64, sparklineHistory)
 	for i := range long {
 		long[i] = uint64(i)
 	}
-	if got := sparkRunes(renderSparkline(long, ColorPrimary)); len(got) != sparklineDisplayLen {
+	if got := sparkRunes(renderSparkline(long, ColorPrimary, sparklineDisplayLen)); len(got) != sparklineDisplayLen {
 		t.Errorf("%d points rendered %d chars, want %d", len(long), len(got), sparklineDisplayLen)
+	}
+	if got := sparkRunes(renderSparkline(long, ColorPrimary, 10)); len(got) != 10 {
+		t.Errorf("width cap rendered %d chars, want 10", len(got))
 	}
 }
 
 func TestSparklineStats(t *testing.T) {
 	d := NewDashboard("v0", 5001, true, nil, nil)
-	if got := d.getSparklineStats(nil, ""); !strings.Contains(got, "No data") {
-		t.Errorf("nil data = %q, want No data", got)
+	if got := d.getSparklineStats(nil, ""); !strings.Contains(got, "无数据") {
+		t.Errorf("nil data = %q, want 无数据", got)
 	}
-	if got := d.getSparklineStats([]uint64{3, 1, 2}, "p/s"); !strings.Contains(got, "min: 1  avg: 2  max: 3 p/s") {
+	if got := d.getSparklineStats([]uint64{3, 1, 2}, "p/s"); !strings.Contains(got, "最小: 1  平均: 2  最大: 3 p/s") {
 		t.Errorf("uint64 stats = %q", got)
 	}
-	if got := d.getSparklineStatsFloat([]float64{1.5, 0.5}, "MB"); !strings.Contains(got, "min: 0.5  avg: 1.0  max: 1.5 MB") {
+	if got := d.getSparklineStatsFloat([]float64{1.5, 0.5}, "MB"); !strings.Contains(got, "最小: 0.5  平均: 1.0  最大: 1.5 MB") {
 		t.Errorf("float64 stats = %q", got)
+	}
+}
+
+func TestLogFilterKeepsEnglishLevelWords(t *testing.T) {
+	d := NewDashboard("v0", 5001, true, nil, nil)
+	d.addLog(LogMsg{Level: "INFO", Tag: "APP", Message: "甲"})
+	d.addLog(LogMsg{Level: "WARN", Tag: "NET", Message: "乙"})
+	d.logFilter = LevelInfo
+	logs := d.filterLogs()
+	if len(logs) != 1 || logs[0].Message != "甲" {
+		t.Fatalf("INFO filter = %+v, want only 甲", logs)
+	}
+	if got := d.getFilterString(); !strings.Contains(got, "筛选: INFO") {
+		t.Errorf("filter label = %q, want 筛选: INFO", got)
 	}
 }

@@ -177,13 +177,13 @@ type Dashboard struct {
 
 // NewDashboard creates a new dashboard model
 func NewDashboard(version string, port int, devMode bool, lanAddresses []string, captures []CaptureSummary) Dashboard {
-	mode := "Production"
+	mode := "生产"
 	if devMode {
-		mode = "Development"
+		mode = "开发"
 	}
 
 	ti := textinput.New()
-	ti.Placeholder = "Search logs..."
+	ti.Placeholder = "搜索日志..."
 	ti.CharLimit = 50
 
 	d := Dashboard{
@@ -479,9 +479,9 @@ func (d *Dashboard) renderLogs() string {
 	logs := d.filterLogs()
 	if len(logs) == 0 {
 		if d.searchQuery != "" {
-			return TimestampStyle.Render(fmt.Sprintf("  No logs matching '%s'", d.searchQuery))
+			return TimestampStyle.Render(fmt.Sprintf("  没有匹配“%s”的日志", d.searchQuery))
 		}
-		return TimestampStyle.Render("  Waiting for logs...")
+		return TimestampStyle.Render("  等待日志...")
 	}
 
 	lines := make([]string, len(logs))
@@ -498,7 +498,7 @@ func (d Dashboard) View() string {
 	}
 
 	if !d.ready {
-		return "Initializing..."
+		return "正在初始化..."
 	}
 
 	header := d.renderHeader()
@@ -524,25 +524,25 @@ func (d *Dashboard) renderHeader() string {
 
 	httpStatus := statusIndicator(d.httpRunning, "HTTP")
 	wsStatus := statusIndicator(d.wsRunning, "WS")
-	captureStatus := statusIndicator(d.captureRunning, "CAP")
+	captureStatus := statusIndicator(d.captureRunning, "抓包")
 	status := fmt.Sprintf("%s %s %s", httpStatus, wsStatus, captureStatus)
 
 	// Mode and capture interfaces
-	mode := ModeStyle.Render("Mode: " + d.mode)
-	captureLine := "Capture: " + formatCaptureLine(d.captureInterfaces)
+	mode := ModeStyle.Render("模式: " + d.mode)
+	captureLine := "抓包: " + formatCaptureLine(d.captureInterfaces)
 	adapter := TimestampStyle.Render(captureLine)
 
 	httpLine := d.serverURL
 	wsLine := d.wsURL
 	if d.lanServerURL != "" {
-		httpLine = httpLine + "  |  " + d.lanServerURL + " (LAN)"
+		httpLine = httpLine + "  |  " + d.lanServerURL + " (局域网)"
 		wsLine = wsLine + "  |  " + d.lanWsURL
 	}
 	httpURL := URLStyle.Render(httpLine)
 	wsURL := URLStyle.Render(wsLine)
 
 	// Started time
-	startedAt := TimestampStyle.Render("Started: " + d.startTime.Format(time.TimeOnly))
+	startedAt := TimestampStyle.Render("启动: " + d.startTime.Format(time.TimeOnly))
 
 	// Tabs
 	tabs := d.renderTabs()
@@ -561,7 +561,7 @@ func (d *Dashboard) renderHeader() string {
 }
 
 func (d *Dashboard) renderTabs() string {
-	tabs := []string{"[1] Logs", "[2] Stats", "[3] Config"}
+	tabs := []string{"[1] 日志", "[2] 统计", "[3] 配置"}
 	rendered := make([]string, len(tabs))
 
 	for i, tab := range tabs {
@@ -585,33 +585,44 @@ func statusIndicator(running bool, label string) string {
 func (d *Dashboard) renderFooter() string {
 	uptime := time.Since(d.startTime).Round(time.Second)
 
-	// Sparkline
-	packetsSparkline := renderSparkline(d.packetsHistory, ColorPrimary)
-
-	// Stats line 1: Packets & Memory
+	// Stats line 1: Packets & Memory. The sparkline shrinks so this row
+	// stays inside the footer once the Chinese labels are measured.
+	packetsText := formatNumber(d.packets)
+	heapText := fmt.Sprintf("%.0fMB", d.memoryMB)
+	sysText := fmt.Sprintf("%.0fMB", d.memorySysMB)
+	upText := formatDuration(uptime)
+	var packetsSparkline string
+	sparkReserve := fmt.Sprintf(
+		"%s %s %s  |  %s %s  %s %s  |  %s %s",
+		"包:", packetsText, "",
+		"堆:", heapText,
+		"系统:", sysText,
+		"运行:", upText,
+	)
+	packetsSparkline = renderSparkline(d.packetsHistory, ColorPrimary, d.footerSparkCells(sparkReserve))
 	stats1 := fmt.Sprintf(
 		"%s %s %s  |  %s %s  %s %s  |  %s %s",
-		StatLabelStyle.Render("Pkts:"),
-		StatValueStyle.Render(formatNumber(d.packets)),
+		StatLabelStyle.Render("包:"),
+		StatValueStyle.Render(packetsText),
 		packetsSparkline,
-		StatLabelStyle.Render("Heap:"),
-		StatValueStyle.Render(fmt.Sprintf("%.0fMB", d.memoryMB)),
-		StatLabelStyle.Render("Sys:"),
-		StatValueStyle.Render(fmt.Sprintf("%.0fMB", d.memorySysMB)),
-		StatLabelStyle.Render("Up:"),
-		StatValueStyle.Render(formatDuration(uptime)),
+		StatLabelStyle.Render("堆:"),
+		StatValueStyle.Render(heapText),
+		StatLabelStyle.Render("系统:"),
+		StatValueStyle.Render(sysText),
+		StatLabelStyle.Render("运行:"),
+		StatValueStyle.Render(upText),
 	)
 
 	// Stats line 2: WS batching & system
 	stats2 := fmt.Sprintf(
 		"%s %s  |  %s %s  |  %s %s  |  %s %s",
-		StatLabelStyle.Render("Batch:"),
+		StatLabelStyle.Render("批次:"),
 		StatValueStyle.Render(fmt.Sprintf("%s/%s", formatNumber(d.wsBatches), formatNumber(d.wsMessages))),
 		StatLabelStyle.Render("WS:"),
 		StatValueStyle.Render(strconv.Itoa(d.wsClients)),
-		StatLabelStyle.Render("Err:"),
+		StatLabelStyle.Render("错误:"),
 		StatValueStyle.Render(formatNumber(d.errors)),
-		StatLabelStyle.Render("Logs:"),
+		StatLabelStyle.Render("日志:"),
 		StatValueStyle.Render(strconv.Itoa(len(d.logs))),
 	)
 
@@ -619,16 +630,16 @@ func (d *Dashboard) renderFooter() string {
 	filterStr := d.getFilterString()
 	scrollStr := ""
 	if !d.autoScroll {
-		scrollStr = " | " + ModeStyle.Render("PAUSED")
+		scrollStr = " | " + ModeStyle.Render("已暂停")
 	}
 	if d.searchQuery != "" {
-		scrollStr += " | " + URLStyle.Render("Search: "+d.searchQuery)
+		scrollStr += " | " + URLStyle.Render("搜索: "+d.searchQuery)
 	}
 	statusLine := filterStr + scrollStr
 
 	// Help
 	help := HelpStyle.Render(
-		"q:quit  r:restart  p:pause  c:clear  f:filter  /:search  tab:switch  ↑↓:scroll",
+		"q:退出  r:重启  p:暂停  c:清空  f:筛选  /:搜索  tab:切换  ↑↓:滚动",
 	)
 
 	// Search input if active
@@ -647,15 +658,15 @@ func (d *Dashboard) renderFooter() string {
 func (d *Dashboard) getFilterString() string {
 	switch d.logFilter {
 	case LevelInfo:
-		return LogInfoStyle.Render("Filter: INFO")
+		return LogInfoStyle.Render("筛选: INFO")
 	case LevelSuccess:
-		return LogSuccessStyle.Render("Filter: SUCCESS")
+		return LogSuccessStyle.Render("筛选: SUCCESS")
 	case LevelWarn:
-		return LogWarnStyle.Render("Filter: WARN")
+		return LogWarnStyle.Render("筛选: WARN")
 	case LevelError:
-		return LogErrorStyle.Render("Filter: ERROR")
+		return LogErrorStyle.Render("筛选: ERROR")
 	default:
-		return StatLabelStyle.Render("Filter: ALL")
+		return StatLabelStyle.Render("筛选: ALL")
 	}
 }
 
@@ -680,10 +691,20 @@ func (d *Dashboard) renderStatsView() string {
 		batchesPerSec = float64(d.wsBatchHistory[len(d.wsBatchHistory)-1])
 	}
 
-	// Fixed-width stat helper
-	labelStyle := StatLabelStyle.Width(12).Align(lipgloss.Right)
+	colWidth := max((d.width-4)/2, 1)
+	// Leave one cell for the leading space in front of each sparkline.
+	sparkBudget := min(sparklineDisplayLen, max(colWidth-1, 0))
+
+	// Label column tracks the widest label in display cells, not bytes.
+	statLabels := []string{
+		"运行时间:", "数据包:", "包/秒:", "错误:", "错误率:",
+		"客户端:", "批次:", "批次/秒:", "消息:", "每批平均:", "队列:",
+		"接收总量:", "接收/秒:", "发送总量:", "发送/秒:",
+		"条目:", "缓冲区:",
+	}
+	labelStyle := fitStyle(StatLabelStyle, lipgloss.Right, statLabels)
 	valStyle := func(color lipgloss.Color) lipgloss.Style {
-		return lipgloss.NewStyle().Bold(true).Foreground(color).Width(12)
+		return lipgloss.NewStyle().Bold(true).Foreground(color)
 	}
 	stat := func(label, value string, color lipgloss.Color) string {
 		return fmt.Sprintf(" %s %s", labelStyle.Render(label), valStyle(color).Render(value))
@@ -694,49 +715,48 @@ func (d *Dashboard) renderStatsView() string {
 
 	// Left column: Server, WebSocket, Traffic
 	leftLines := []string{
-		section("📊", "Server"),
-		stat("Uptime:", formatDuration(uptime), ColorHighlight),
-		stat("Packets:", formatNumber(d.packets), ColorSuccess),
-		stat("Pkts/sec:", fmt.Sprintf("%.0f", packetsPerSec), ColorPrimary),
-		stat("Errors:", formatNumber(d.errors), d.getErrorColor(errorRate)),
-		stat("Err rate:", fmt.Sprintf("%.2f%%", errorRate), d.getErrorColor(errorRate)),
+		section("📊", "服务器"),
+		stat("运行时间:", formatDuration(uptime), ColorHighlight),
+		stat("数据包:", formatNumber(d.packets), ColorSuccess),
+		stat("包/秒:", fmt.Sprintf("%.0f", packetsPerSec), ColorPrimary),
+		stat("错误:", formatNumber(d.errors), d.getErrorColor(errorRate)),
+		stat("错误率:", fmt.Sprintf("%.2f%%", errorRate), d.getErrorColor(errorRate)),
 		"",
 		section("🔌", "WebSocket"),
-		stat("Clients:", strconv.Itoa(d.wsClients), ColorPrimary),
-		stat("Batches:", formatNumber(d.wsBatches), ColorSuccess),
-		stat("Batch/s:", fmt.Sprintf("%.0f", batchesPerSec), ColorPrimary),
-		stat("Messages:", formatNumber(d.wsMessages), ColorSuccess),
-		stat("Avg/batch:", fmt.Sprintf("%.1f", avgMsgsPerBatch), ColorWarning),
-		stat("Queue:", strconv.Itoa(d.wsQueueSize), d.getQueueColor()),
+		stat("客户端:", strconv.Itoa(d.wsClients), ColorPrimary),
+		stat("批次:", formatNumber(d.wsBatches), ColorSuccess),
+		stat("批次/秒:", fmt.Sprintf("%.0f", batchesPerSec), ColorPrimary),
+		stat("消息:", formatNumber(d.wsMessages), ColorSuccess),
+		stat("每批平均:", fmt.Sprintf("%.1f", avgMsgsPerBatch), ColorWarning),
+		stat("队列:", strconv.Itoa(d.wsQueueSize), d.getQueueColor()),
 		"",
-		section("📡", "Traffic"),
-		stat("RX total:", formatBytes(d.bytesReceived), ColorPrimary),
-		stat("RX/sec:", formatBytes(d.rxPerSec)+"/s", ColorSuccess),
-		stat("TX total:", formatBytes(d.bytesSent), ColorPrimary),
-		stat("TX/sec:", formatBytes(d.txPerSec)+"/s", ColorWarning),
+		section("📡", "流量"),
+		stat("接收总量:", formatBytes(d.bytesReceived), ColorPrimary),
+		stat("接收/秒:", formatBytes(d.rxPerSec)+"/s", ColorSuccess),
+		stat("发送总量:", formatBytes(d.bytesSent), ColorPrimary),
+		stat("发送/秒:", formatBytes(d.txPerSec)+"/s", ColorWarning),
 	}
 
 	// Right column: Sparklines + Logging
 	rightLines := []string{
-		section("📈", "Packets/s"),
-		" " + renderSparkline(d.packetsHistory, ColorPrimary),
+		section("📈", "包/秒"),
+		" " + renderSparkline(d.packetsHistory, ColorPrimary, sparkBudget),
 		" " + d.getSparklineStats(d.packetsHistory, ""),
 		"",
-		section("🧠", "Heap MB"),
-		" " + renderSparkline(d.memoryHistory, ColorWarning),
+		section("🧠", "堆内存 MB"),
+		" " + renderSparkline(d.memoryHistory, ColorWarning, sparkBudget),
 		" " + d.getSparklineStatsFloat(d.memoryHistory, ""),
 		"",
-		section("💾", "Sys MB"),
-		" " + renderSparkline(d.memorySysHistory, ColorError),
+		section("💾", "系统内存 MB"),
+		" " + renderSparkline(d.memorySysHistory, ColorError, sparkBudget),
 		" " + d.getSparklineStatsFloat(d.memorySysHistory, ""),
 		"",
-		section("📝", "Logging"),
-		stat("Entries:", formatNumber(d.logEntries), ColorSuccess),
-		stat("Batches:", formatNumber(d.logBatches), ColorPrimary),
-		stat("Buffer:", strconv.Itoa(d.logBufferSize), ColorWarning),
+		section("📝", "日志"),
+		stat("条目:", formatNumber(d.logEntries), ColorSuccess),
+		stat("批次:", formatNumber(d.logBatches), ColorPrimary),
+		stat("缓冲区:", strconv.Itoa(d.logBufferSize), ColorWarning),
 	}
 
-	colWidth := (d.width - 4) / 2
 	leftCol := lipgloss.NewStyle().Width(colWidth).Render(strings.Join(leftLines, "\n"))
 	rightCol := lipgloss.NewStyle().Width(colWidth).Render(strings.Join(rightLines, "\n"))
 
@@ -763,63 +783,65 @@ func (d *Dashboard) getQueueColor() lipgloss.Color {
 
 func (d *Dashboard) getSparklineStats(data []uint64, unit string) string {
 	if len(data) == 0 {
-		return StatLabelStyle.Render("No data")
+		return StatLabelStyle.Render("无数据")
 	}
 	lo, hi, avg := float64(slices.Min(data)), float64(slices.Max(data)), avgVal(data)
-	return StatLabelStyle.Render(fmt.Sprintf("min: %.0f  avg: %.0f  max: %.0f %s", lo, avg, hi, unit))
+	return StatLabelStyle.Render(fmt.Sprintf("最小: %.0f  平均: %.0f  最大: %.0f %s", lo, avg, hi, unit))
 }
 
 func (d *Dashboard) getSparklineStatsFloat(data []float64, unit string) string {
 	if len(data) == 0 {
-		return StatLabelStyle.Render("No data")
+		return StatLabelStyle.Render("无数据")
 	}
 	lo, hi, avg := float64(slices.Min(data)), float64(slices.Max(data)), avgVal(data)
-	return StatLabelStyle.Render(fmt.Sprintf("min: %.1f  avg: %.1f  max: %.1f %s", lo, avg, hi, unit))
+	return StatLabelStyle.Render(fmt.Sprintf("最小: %.1f  平均: %.1f  最大: %.1f %s", lo, avg, hi, unit))
 }
 
 func (d *Dashboard) renderConfigView() string {
 	section := func(icon, title string) string {
 		return fmt.Sprintf(" %s %s", icon, TitleStyle.Render(title))
 	}
-	labelStyle := StatLabelStyle.Width(12).Align(lipgloss.Right)
+	cfgLabels := []string{"版本:", "模式:", "HTTP 地址:", "WS 地址:", "抓包:", "局域网:"}
+	labelStyle := fitStyle(StatLabelStyle, lipgloss.Right, cfgLabels)
 	cfgLine := func(label, value string, style lipgloss.Style) string {
 		return fmt.Sprintf(" %s %s", labelStyle.Render(label), style.Render(value))
 	}
-	keyStyle := lipgloss.NewStyle().Bold(true).Foreground(ColorPrimary).Width(6)
+	keys := []string{"q", "r", "p", "c", "f", "/", "↑↓", "g/G", "1-3", "tab"}
+	keyStyle := fitStyle(lipgloss.NewStyle().Bold(true).Foreground(ColorPrimary), lipgloss.Left, keys)
 	keyLine := func(key, desc string) string {
 		return fmt.Sprintf(" %s %s", keyStyle.Render(key), StatLabelStyle.Render(desc))
 	}
 
 	// Left column: Configuration
 	leftLines := []string{
-		section("⚙️", "Configuration"),
-		cfgLine("Version:", d.version, StatValueStyle),
-		cfgLine("Mode:", d.mode, ModeStyle),
-		cfgLine("HTTP URL:", d.serverURL, URLStyle),
-		cfgLine("WS URL:", d.wsURL, URLStyle),
-		cfgLine("Capture:", formatCaptureLine(d.captureInterfaces), StatValueStyle),
-		cfgLine("LAN:", strings.Join(d.lanAddresses, ", "), StatValueStyle),
+		section("⚙️", "配置"),
+		cfgLine("版本:", d.version, StatValueStyle),
+		cfgLine("模式:", d.mode, ModeStyle),
+		cfgLine("HTTP 地址:", d.serverURL, URLStyle),
+		cfgLine("WS 地址:", d.wsURL, URLStyle),
+		cfgLine("抓包:", formatCaptureLine(d.captureInterfaces), StatValueStyle),
+		cfgLine("局域网:", strings.Join(d.lanAddresses, ", "), StatValueStyle),
 		"",
-		section("ℹ️", "About"),
+		section("ℹ️", "关于"),
 		cfgLine("", "OpenRadar - Albion Online", StatLabelStyle),
-		cfgLine("", "Real-time packet radar", StatLabelStyle),
+		cfgLine("", "实时数据包雷达", StatLabelStyle),
 	}
 
 	// Right column: Keyboard shortcuts (single column for alignment)
 	rightLines := []string{
-		section("⌨️", "Shortcuts"),
-		keyLine("q", "Quit application"),
-		keyLine("r", "Restart application"),
-		keyLine("p", "Toggle auto-scroll"),
-		keyLine("c", "Clear logs"),
-		keyLine("f", "Cycle log filter"),
-		keyLine("/", "Search logs"),
-		keyLine("↑↓", "Scroll logs"),
-		keyLine("g/G", "Go to top/bottom"),
-		keyLine("1-3", "Switch tabs"),
-		keyLine("tab", "Next tab"),
+		section("⌨️", "快捷键"),
+		keyLine("q", "退出程序"),
+		keyLine("r", "重启程序"),
+		keyLine("p", "切换自动滚动"),
+		keyLine("c", "清空日志"),
+		keyLine("f", "切换日志筛选"),
+		keyLine("/", "搜索日志"),
+		keyLine("↑↓", "滚动日志"),
+		keyLine("g/G", "跳到顶部/底部"),
+		keyLine("1-3", "切换标签页"),
+		keyLine("tab", "下一个标签页"),
 		"",
-		section("📋", "Log Levels"),
+		section("📋", "日志级别"),
 		" " + LogInfoStyle.Render("INFO") + " " + LogSuccessStyle.Render("SUCCESS") + " " + LogWarnStyle.Render("WARN") + " " + LogErrorStyle.Render("ERROR"),
 	}
 
@@ -830,20 +852,55 @@ func (d *Dashboard) renderConfigView() string {
 	return lipgloss.JoinHorizontal(lipgloss.Top, " ", leftCol, " ", rightCol)
 }
 
+// fitStyle pads every item to the widest display width. len() would under-count
+// Chinese characters and shift the value column.
+func fitStyle(base lipgloss.Style, align lipgloss.Position, items []string) lipgloss.Style {
+	w := 0
+	for _, item := range items {
+		if lw := lipgloss.Width(item); lw > w {
+			w = lw
+		}
+	}
+	return base.Width(w).Align(align)
+}
+
+// footerSparkCells is how many cells the packet sparkline may occupy without
+// pushing the footer stats past the terminal width.
+func (d *Dashboard) footerSparkCells(reservePlain string) int {
+	avail := d.width - FooterStyle.GetHorizontalFrameSize() - lipgloss.Width(reservePlain)
+	if avail > sparklineDisplayLen {
+		avail = sparklineDisplayLen
+	}
+	if avail < 0 {
+		return 0
+	}
+	return avail
+}
+
 // Sparkline rendering
 var sparkChars = []rune{'▁', '▂', '▃', '▄', '▅', '▆', '▇', '█'}
 
-func renderSparkline[T uint64 | float64](data []T, color lipgloss.Color) string {
-	if len(data) == 0 {
+func renderSparkline[T uint64 | float64](data []T, color lipgloss.Color, maxCells int) string {
+	if len(data) == 0 || maxCells <= 0 {
 		return ""
 	}
 
-	// Downsample if needed (60 data points -> 42 display chars)
+	// Block glyphs are usually one cell, but measure them so a double-width
+	// font cannot push the line past the column.
+	cell := lipgloss.Width(string(sparkChars[0]))
+	if cell < 1 {
+		cell = 1
+	}
+	maxRunes := maxCells / cell
+	if maxRunes < 1 {
+		return ""
+	}
+
 	displayData := data
-	if len(data) > sparklineDisplayLen {
-		displayData = make([]T, sparklineDisplayLen)
-		ratio := float64(len(data)) / float64(sparklineDisplayLen)
-		for i := range sparklineDisplayLen {
+	if len(data) > maxRunes {
+		displayData = make([]T, maxRunes)
+		ratio := float64(len(data)) / float64(maxRunes)
+		for i := range maxRunes {
 			// Average the values in each bucket
 			start := int(float64(i) * ratio)
 			end := min(int(float64(i+1)*ratio), len(data))
@@ -913,7 +970,7 @@ func formatBytes(b uint64) string {
 
 func formatCaptureLine(summaries []CaptureSummary) string {
 	if len(summaries) == 0 {
-		return "(awaiting)"
+		return "(等待中)"
 	}
 	parts := make([]string, 0, len(summaries))
 	for _, c := range summaries {

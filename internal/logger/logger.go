@@ -84,7 +84,7 @@ func (l *Logger) Stop() {
 }
 
 func (l *Logger) PrintSessionInfo() {
-	PrintInfo("LOG", "Session file: %s", l.currentSessionFile)
+	PrintInfo("LOG", "会话文件: %s", l.currentSessionFile)
 }
 
 func (l *Logger) SetEnabled(enabled bool) {
@@ -92,9 +92,9 @@ func (l *Logger) SetEnabled(enabled bool) {
 	defer l.mu.Unlock()
 	l.enabled = enabled
 	if enabled {
-		PrintSuccess("LOG", "Server Side Logging ENABLED")
+		PrintSuccess("LOG", "服务端日志已启用")
 	} else {
-		PrintWarn("LOG", "Server Side Logging DISABLED")
+		PrintWarn("LOG", "服务端日志已禁用")
 	}
 }
 
@@ -113,7 +113,7 @@ func (l *Logger) initializeDirectories() {
 
 	for _, dir := range dirs {
 		if err := os.MkdirAll(dir, 0o755); err != nil {
-			PrintError("LOG", "Failed to create directory %s: %v", dir, err)
+			PrintError("LOG", "创建目录失败 %s: %v", dir, err)
 		}
 	}
 }

@@ -172,7 +172,7 @@ func (m *Manager) stopRecordingLocked() error {
 	var firstErr error
 	for name, mc := range m.active {
 		if err := mc.cap.StopRecording(); err != nil {
-			logger.PrintWarn("PKT", "pcap recording could not stop on %s: %v", name, err)
+			logger.PrintWarn("PKT", "无法停止 %s 的 pcap 录制: %v", name, err)
 			if firstErr == nil {
 				firstErr = fmt.Errorf("%s: %w", name, err)
 			}

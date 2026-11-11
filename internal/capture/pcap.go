@@ -202,7 +202,7 @@ func (c *Capturer) processPacket(p gopacket.Packet) {
 		if err := c.recordWriter.WritePacket(p.Metadata().CaptureInfo, p.Data()); err != nil {
 			n := c.recordWriteErrors.Add(1)
 			if n%100 == 1 {
-				logger.PrintWarn("PKT", "pcap recorder write error: %v", err)
+				logger.PrintWarn("PKT", "pcap 录制写入错误: %v", err)
 			}
 		}
 	}

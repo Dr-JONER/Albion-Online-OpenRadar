@@ -154,7 +154,7 @@ func (a *NetworkAPI) handleSelect(w http.ResponseWriter, r *http.Request) {
 	}
 	recording := a.mgr.IsRecording()
 	if wasRecording && !recording {
-		logger.PrintWarn("PKT", "pcap recording stopped during interface apply: %v", reconfErr)
+		logger.PrintWarn("PKT", "应用网卡设置时 pcap 录制已停止: %v", reconfErr)
 	}
 	if err := capture.MutateConfig(a.appDir, func(cfg *capture.Config) {
 		cfg.CaptureInterfaces = persisted
