@@ -163,9 +163,9 @@ describe('player equipment resolves to the correct items', () => {
         const nameColumn = header.firstElementChild;
         const guildRow = nameColumn.lastElementChild;
         expect(guildRow.innerHTML).toContain('[Some Guild]');
-        expect(guildRow.innerHTML).not.toContain('>Mounted<');
+        expect(guildRow.innerHTML).not.toContain('>骑乘<');
         const ipMountedRow = header.nextElementSibling;
-        expect(ipMountedRow.innerHTML).toContain('>Mounted<');
+        expect(ipMountedRow.innerHTML).toContain('>骑乘<');
         expect(ipMountedRow.className).toContain('phone-landscape:mt-0');
         expect(ipMountedRow.className).not.toContain('phone-landscape:contents');
     });
@@ -246,12 +246,12 @@ describe('player card refreshes on a display setting change without a new spawn'
             const msg = (await loadFixture('players', 'faction-spawn')).messages[3];
             handler.handleNewPlayerEvent(msg.parameters['0'], normalizeParams(msg.parameters));
         }],
-        ['settingPlayersShowTotalIp', 'IP 800', async () => {
+        ['settingPlayersShowTotalIp', '强度 800', async () => {
             const msg = (await loadFixture('players', 'equipment')).messages[0];
             handler.handleNewPlayerEvent(msg.parameters['0'], {1: 'Geared', 8: '', 53: 0, 51: null, 40: [], 43: []});
             handler.updateItems(msg.parameters['0'], normalizeParams(msg.parameters));
         }],
-        ['settingPlayersShowMounted', '>Mounted<', async () => {
+        ['settingPlayersShowMounted', '>骑乘<', async () => {
             const msg = (await loadFixture('players', 'mounted')).messages[0];
             handler.handleNewPlayerEvent(msg.parameters['0'], {1: 'Rider', 8: '', 53: 0, 51: null, 40: [], 43: []});
             handler.handleMountedPlayerEvent(msg.parameters['0'], normalizeParams(msg.parameters));
@@ -373,7 +373,7 @@ describe('player card refreshes on a display setting change without a new spawn'
     // arrives after the first render shows on the next refresh. pcap-derived: players/mounted.json message 0; synthetic: the other changes.
     const spawn = {1: 'Before', 8: 'OldGuild', 53: 0, 51: null, 40: [], 43: []};
     test.each([
-        ['mounted', '>Mounted<', spawn, async (id) => {
+        ['mounted', '>骑乘<', spawn, async (id) => {
             const msg = (await loadFixture('players', 'mounted')).messages[0];
             handler.handleMountedPlayerEvent(id, normalizeParams(msg.parameters));
         }],

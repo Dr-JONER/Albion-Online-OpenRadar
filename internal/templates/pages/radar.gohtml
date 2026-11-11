@@ -22,58 +22,58 @@
                 <canvas class="ttcan absolute top-0 left-0 max-w-full" id="uiCanvas" width="500" height="500" style="z-index: 6;"></canvas>
             </div>
             <div id="radarSettingsPanel" class="collapse collapse-arrow bg-base-300/50 rounded-lg mt-3 phone-landscape:grow phone-landscape:basis-72">
-                <input type="checkbox" data-setting="settingUiRadarSettingsOpen" aria-label="Radar settings"/>
+                <input type="checkbox" data-setting="settingUiRadarSettingsOpen" aria-label="雷达设置"/>
                 <div class="collapse-title text-sm font-semibold flex items-center gap-2">
                     <i data-lucide="sliders-horizontal" class="w-4 h-4"></i>
-                    <span id="label-settingUiRadarSettingsOpen" data-setting-label="settingUiRadarSettingsOpen">Radar settings</span>
+                    <span id="label-settingUiRadarSettingsOpen" data-setting-label="settingUiRadarSettingsOpen">雷达设置</span>
                 </div>
                 <div class="collapse-content @container text-sm text-base-content/80">
                     <div class="grid grid-cols-1 @2xl:grid-cols-2 gap-x-8 gap-y-6 pt-1">
                         <section>
                             <h3 class="text-sm font-semibold text-base-content/80 mb-3 flex items-center gap-2">
                                 <i data-lucide="monitor" class="w-4 h-4"></i>
-                                View
+                                视图
                             </h3>
                             <div class="grid grid-cols-1 gap-2 max-w-2xl">
                                 <div class="flex items-center gap-1.5 sm:gap-2 p-2 rounded-lg bg-base-300">
                                     <i data-lucide="zoom-in" class="w-4 h-4 shrink-0 text-base-content/50"></i>
-                                    <span id="label-settingRadarZoom" data-setting-label="settingRadarZoom" class="text-base-content/80 text-xs whitespace-nowrap w-16 shrink-0">Zoom</span>
+                                    <span id="label-settingRadarZoom" data-setting-label="settingRadarZoom" class="text-base-content/80 text-xs whitespace-nowrap w-16 shrink-0">缩放</span>
                                     <span class="w-3 shrink-0" aria-hidden="true"></span>
-                                    <button type="button" data-nudge="settingRadarZoom" data-dir="-1" aria-label="Decrease zoom" title="Decrease zoom" class="btn btn-ghost btn-xs btn-square ml-auto"><i data-lucide="minus" class="w-3 h-3"></i></button>
+                                    <button type="button" data-nudge="settingRadarZoom" data-dir="-1" aria-label="减小缩放" title="减小缩放" class="btn btn-ghost btn-xs btn-square ml-auto"><i data-lucide="minus" class="w-3 h-3"></i></button>
                                     <input type="range" data-setting="settingRadarZoom" aria-labelledby="label-settingRadarZoom" min="0.1" max="3" step="0.1" class="range range-primary range-xs min-w-0 w-full max-w-64">
-                                    <button type="button" data-nudge="settingRadarZoom" data-dir="1" aria-label="Increase zoom" title="Increase zoom" class="btn btn-ghost btn-xs btn-square"><i data-lucide="plus" class="w-3 h-3"></i></button>
+                                    <button type="button" data-nudge="settingRadarZoom" data-dir="1" aria-label="增大缩放" title="增大缩放" class="btn btn-ghost btn-xs btn-square"><i data-lucide="plus" class="w-3 h-3"></i></button>
                                     <span data-value-for="settingRadarZoom" class="text-xs text-base-content/60 font-mono tabular-nums w-14 shrink-0 text-right whitespace-nowrap"></span>
-                                    <button type="button" data-reset="settingRadarZoom" aria-label="Reset zoom" title="Reset zoom" class="btn btn-ghost btn-xs btn-square"><i data-lucide="rotate-ccw" class="w-3 h-3"></i></button>
+                                    <button type="button" data-reset="settingRadarZoom" aria-label="重置缩放" title="重置缩放" class="btn btn-ghost btn-xs btn-square"><i data-lucide="rotate-ccw" class="w-3 h-3"></i></button>
                                 </div>
                                 <div class="flex items-center gap-1.5 sm:gap-2 p-2 rounded-lg bg-base-300">
                                     <i data-lucide="maximize" class="w-4 h-4 shrink-0 text-base-content/50"></i>
-                                    <span id="label-settingRadarSize" data-setting-label="settingRadarSize" class="text-base-content/80 text-xs whitespace-nowrap w-16 shrink-0">Max size</span>
-                                    <div class="tooltip shrink-0" data-setting-tip="settingRadarSize" data-tip="Width and height in pixels, shrunk on small windows. Ignored while Fit to screen is on.">
-                                        <span tabindex="0" role="img" aria-label="Width and height in pixels, shrunk on small windows. Ignored while Fit to screen is on." class="block"><i data-lucide="info" class="w-3 h-3 opacity-50"></i></span>
+                                    <span id="label-settingRadarSize" data-setting-label="settingRadarSize" class="text-base-content/80 text-xs whitespace-nowrap w-16 shrink-0">最大尺寸</span>
+                                    <div class="tooltip shrink-0" data-setting-tip="settingRadarSize" data-tip="宽和高的像素。窗口较小时会缩小。开启“适应屏幕”后忽略此项。">
+                                        <span tabindex="0" role="img" aria-label="宽和高的像素。窗口较小时会缩小。开启“适应屏幕”后忽略此项。" class="block"><i data-lucide="info" class="w-3 h-3 opacity-50"></i></span>
                                     </div>
-                                    <button type="button" data-nudge="settingRadarSize" data-dir="-1" aria-label="Decrease max size" title="Decrease max size" class="btn btn-ghost btn-xs btn-square ml-auto"><i data-lucide="minus" class="w-3 h-3"></i></button>
+                                    <button type="button" data-nudge="settingRadarSize" data-dir="-1" aria-label="减小最大尺寸" title="减小最大尺寸" class="btn btn-ghost btn-xs btn-square ml-auto"><i data-lucide="minus" class="w-3 h-3"></i></button>
                                     <input type="range" data-setting="settingRadarSize" aria-labelledby="label-settingRadarSize" min="300" max="1200" step="50" class="range range-primary range-xs min-w-0 w-full max-w-64">
-                                    <button type="button" data-nudge="settingRadarSize" data-dir="1" aria-label="Increase max size" title="Increase max size" class="btn btn-ghost btn-xs btn-square"><i data-lucide="plus" class="w-3 h-3"></i></button>
+                                    <button type="button" data-nudge="settingRadarSize" data-dir="1" aria-label="增大最大尺寸" title="增大最大尺寸" class="btn btn-ghost btn-xs btn-square"><i data-lucide="plus" class="w-3 h-3"></i></button>
                                     <span data-value-for="settingRadarSize" class="text-xs text-base-content/60 font-mono tabular-nums w-14 shrink-0 text-right whitespace-nowrap"></span>
-                                    <button type="button" data-reset="settingRadarSize" aria-label="Reset max size" title="Reset max size" class="btn btn-ghost btn-xs btn-square"><i data-lucide="rotate-ccw" class="w-3 h-3"></i></button>
+                                    <button type="button" data-reset="settingRadarSize" aria-label="重置最大尺寸" title="重置最大尺寸" class="btn btn-ghost btn-xs btn-square"><i data-lucide="rotate-ccw" class="w-3 h-3"></i></button>
                                 </div>
                                 <label class="flex items-center gap-2 p-2 rounded-lg bg-base-300 cursor-pointer group hover:bg-base-300/70 transition-colors">
                                     <input type="checkbox" data-setting="settingRadarFitToScreen" aria-labelledby="label-settingRadarFitToScreen" class="toggle toggle-primary toggle-sm">
                                     <i data-lucide="expand" class="w-4 h-4 text-base-content/50"></i>
-                                    <span id="label-settingRadarFitToScreen" data-setting-label="settingRadarFitToScreen" class="text-base-content/80 text-xs group-hover:text-base-content">Fit to screen</span>
-                                    <div class="tooltip" data-setting-tip="settingRadarFitToScreen" data-tip="Largest square that fits the window, up to 1200 px, next to the player list when the list sits beside. Overrides Max size.">
-                                        <span tabindex="0" role="img" aria-label="Largest square that fits the window, up to 1200 px, next to the player list when the list sits beside. Overrides Max size." class="block"><i data-lucide="info" class="w-3 h-3 opacity-50"></i></span>
+                                    <span id="label-settingRadarFitToScreen" data-setting-label="settingRadarFitToScreen" class="text-base-content/80 text-xs group-hover:text-base-content">适应屏幕</span>
+                                    <div class="tooltip" data-setting-tip="settingRadarFitToScreen" data-tip="取窗口里能放下的最大正方形，上限 1200 像素；玩家列表在旁边时与它并排。会覆盖“最大尺寸”。">
+                                        <span tabindex="0" role="img" aria-label="取窗口里能放下的最大正方形，上限 1200 像素；玩家列表在旁边时与它并排。会覆盖“最大尺寸”。" class="block"><i data-lucide="info" class="w-3 h-3 opacity-50"></i></span>
                                     </div>
                                 </label>
                                 <div class="flex items-center gap-1.5 sm:gap-2 p-2 rounded-lg bg-base-300">
                                     <i data-lucide="image" class="w-4 h-4 shrink-0 text-base-content/50"></i>
-                                    <span id="label-settingRadarIconSize" data-setting-label="settingRadarIconSize" class="text-base-content/80 text-xs whitespace-nowrap w-16 shrink-0">Icon size</span>
+                                    <span id="label-settingRadarIconSize" data-setting-label="settingRadarIconSize" class="text-base-content/80 text-xs whitespace-nowrap w-16 shrink-0">图标大小</span>
                                     <span class="w-3 shrink-0" aria-hidden="true"></span>
-                                    <button type="button" data-nudge="settingRadarIconSize" data-dir="-1" aria-label="Decrease icon size" title="Decrease icon size" class="btn btn-ghost btn-xs btn-square ml-auto"><i data-lucide="minus" class="w-3 h-3"></i></button>
+                                    <button type="button" data-nudge="settingRadarIconSize" data-dir="-1" aria-label="减小图标大小" title="减小图标大小" class="btn btn-ghost btn-xs btn-square ml-auto"><i data-lucide="minus" class="w-3 h-3"></i></button>
                                     <input type="range" data-setting="settingRadarIconSize" aria-labelledby="label-settingRadarIconSize" min="0.5" max="2" step="0.1" class="range range-primary range-xs min-w-0 w-full max-w-64">
-                                    <button type="button" data-nudge="settingRadarIconSize" data-dir="1" aria-label="Increase icon size" title="Increase icon size" class="btn btn-ghost btn-xs btn-square"><i data-lucide="plus" class="w-3 h-3"></i></button>
+                                    <button type="button" data-nudge="settingRadarIconSize" data-dir="1" aria-label="增大图标大小" title="增大图标大小" class="btn btn-ghost btn-xs btn-square"><i data-lucide="plus" class="w-3 h-3"></i></button>
                                     <span data-value-for="settingRadarIconSize" class="text-xs text-base-content/60 font-mono tabular-nums w-14 shrink-0 text-right whitespace-nowrap"></span>
-                                    <button type="button" data-reset="settingRadarIconSize" aria-label="Reset icon size" title="Reset icon size" class="btn btn-ghost btn-xs btn-square"><i data-lucide="rotate-ccw" class="w-3 h-3"></i></button>
+                                    <button type="button" data-reset="settingRadarIconSize" aria-label="重置图标大小" title="重置图标大小" class="btn btn-ghost btn-xs btn-square"><i data-lucide="rotate-ccw" class="w-3 h-3"></i></button>
                                 </div>
                             </div>
                         </section>
@@ -81,39 +81,39 @@
                             <section>
                                 <h3 class="text-sm font-semibold text-base-content/80 mb-3 flex items-center gap-2">
                                     <i data-lucide="eye" class="w-4 h-4"></i>
-                                    Display
+                                    显示
                                 </h3>
                                 <div class="grid grid-cols-1 @sm:grid-cols-2 @xl:grid-cols-3 gap-2">
                                     <label class="flex items-center gap-2 p-2 rounded-lg bg-base-300 cursor-pointer group hover:bg-base-300/70 transition-colors">
                                         <input type="checkbox" data-setting="settingRadarMapBackground" class="toggle toggle-primary toggle-sm">
-                                        <span id="label-settingRadarMapBackground" data-setting-label="settingRadarMapBackground" class="text-base-content/80 text-xs group-hover:text-base-content">Map background</span>
+                                        <span id="label-settingRadarMapBackground" data-setting-label="settingRadarMapBackground" class="text-base-content/80 text-xs group-hover:text-base-content">地图背景</span>
                                     </label>
                                     <label class="flex items-center gap-2 p-2 rounded-lg bg-base-300 cursor-pointer group hover:bg-base-300/70 transition-colors">
                                         <input type="checkbox" data-setting="settingRadarHudZoneInfo" aria-labelledby="label-settingRadarHudZoneInfo" class="toggle toggle-primary toggle-sm">
-                                        <span id="label-settingRadarHudZoneInfo" data-setting-label="settingRadarHudZoneInfo" class="text-base-content/80 text-xs group-hover:text-base-content">Zone info box</span>
-                                        <div class="tooltip" data-setting-tip="settingRadarHudZoneInfo" data-tip="Top-left box with the zone name, tier and a PvP marker.">
-                                            <span tabindex="0" role="img" aria-label="Top-left box with the zone name, tier and a PvP marker." class="block"><i data-lucide="info" class="w-3 h-3 opacity-50"></i></span>
+                                        <span id="label-settingRadarHudZoneInfo" data-setting-label="settingRadarHudZoneInfo" class="text-base-content/80 text-xs group-hover:text-base-content">区域信息</span>
+                                        <div class="tooltip" data-setting-tip="settingRadarHudZoneInfo" data-tip="左上角显示区域名称、等阶和 PvP 标记。">
+                                            <span tabindex="0" role="img" aria-label="左上角显示区域名称、等阶和 PvP 标记。" class="block"><i data-lucide="info" class="w-3 h-3 opacity-50"></i></span>
                                         </div>
                                     </label>
                                     <label class="flex items-center gap-2 p-2 rounded-lg bg-base-300 cursor-pointer group hover:bg-base-300/70 transition-colors">
                                         <input type="checkbox" data-setting="settingRadarHudStats" aria-labelledby="label-settingRadarHudStats" class="toggle toggle-primary toggle-sm">
-                                        <span id="label-settingRadarHudStats" data-setting-label="settingRadarHudStats" class="text-base-content/80 text-xs group-hover:text-base-content">Stats box</span>
-                                        <div class="tooltip" data-setting-tip="settingRadarHudStats" data-tip="Top-right box: resource and mob counts, plus player count when detection is on.">
-                                            <span tabindex="0" role="img" aria-label="Top-right box: resource and mob counts, plus player count when detection is on." class="block"><i data-lucide="info" class="w-3 h-3 opacity-50"></i></span>
+                                        <span id="label-settingRadarHudStats" data-setting-label="settingRadarHudStats" class="text-base-content/80 text-xs group-hover:text-base-content">统计框</span>
+                                        <div class="tooltip" data-setting-tip="settingRadarHudStats" data-tip="右上角显示资源和怪物数量；开启玩家检测时也显示玩家数量。">
+                                            <span tabindex="0" role="img" aria-label="右上角显示资源和怪物数量；开启玩家检测时也显示玩家数量。" class="block"><i data-lucide="info" class="w-3 h-3 opacity-50"></i></span>
                                         </div>
                                     </label>
                                     <label class="flex items-center gap-2 p-2 rounded-lg bg-base-300 cursor-pointer group hover:bg-base-300/70 transition-colors">
                                         <input type="checkbox" data-setting="settingRadarPlayersBeside" aria-labelledby="label-settingRadarPlayersBeside" class="toggle toggle-primary toggle-sm">
-                                        <span id="label-settingRadarPlayersBeside" data-setting-label="settingRadarPlayersBeside" class="text-base-content/80 text-xs group-hover:text-base-content">Players beside radar</span>
-                                        <div class="tooltip" data-setting-tip="settingRadarPlayersBeside" data-tip="Shows the player list to the right of the radar when the window is wide enough.">
-                                            <span tabindex="0" role="img" aria-label="Shows the player list to the right of the radar when the window is wide enough." class="block"><i data-lucide="info" class="w-3 h-3 opacity-50"></i></span>
+                                        <span id="label-settingRadarPlayersBeside" data-setting-label="settingRadarPlayersBeside" class="text-base-content/80 text-xs group-hover:text-base-content">玩家列表靠右</span>
+                                        <div class="tooltip" data-setting-tip="settingRadarPlayersBeside" data-tip="窗口够宽时，把玩家列表放在雷达右侧。">
+                                            <span tabindex="0" role="img" aria-label="窗口够宽时，把玩家列表放在雷达右侧。" class="block"><i data-lucide="info" class="w-3 h-3 opacity-50"></i></span>
                                         </div>
                                     </label>
                                     <label class="flex items-center gap-2 p-2 rounded-lg bg-base-300 cursor-pointer group hover:bg-base-300/70 transition-colors pointer-fine:hidden">
                                         <input type="checkbox" data-setting="settingRadarKeepAwake" aria-labelledby="label-settingRadarKeepAwake" class="toggle toggle-primary toggle-sm">
-                                        <span id="label-settingRadarKeepAwake" data-setting-label="settingRadarKeepAwake" class="text-base-content/80 text-xs group-hover:text-base-content">Keep screen awake</span>
-                                        <div class="tooltip" data-setting-tip="settingRadarKeepAwake" data-tip="Stops the screen from sleeping while the radar page is open. Uses more battery on phones.">
-                                            <span tabindex="0" role="img" aria-label="Stops the screen from sleeping while the radar page is open. Uses more battery on phones." class="block"><i data-lucide="info" class="w-3 h-3 opacity-50"></i></span>
+                                        <span id="label-settingRadarKeepAwake" data-setting-label="settingRadarKeepAwake" class="text-base-content/80 text-xs group-hover:text-base-content">保持屏幕常亮</span>
+                                        <div class="tooltip" data-setting-tip="settingRadarKeepAwake" data-tip="雷达页打开时阻止屏幕休眠。手机会更耗电。">
+                                            <span tabindex="0" role="img" aria-label="雷达页打开时阻止屏幕休眠。手机会更耗电。" class="block"><i data-lucide="info" class="w-3 h-3 opacity-50"></i></span>
                                         </div>
                                     </label>
                                 </div>
@@ -121,52 +121,52 @@
                             <section>
                                 <h3 class="text-sm font-semibold text-base-content/80 mb-3 flex items-center gap-2">
                                     <i data-lucide="gem" class="w-4 h-4"></i>
-                                    Resources
+                                    资源
                                 </h3>
                                 <div class="grid grid-cols-1 @sm:grid-cols-2 @xl:grid-cols-3 gap-2">
                                     <label class="flex items-center gap-2 p-2 rounded-lg bg-base-300 cursor-pointer group hover:bg-base-300/70 transition-colors">
                                         <input type="checkbox" data-setting="settingRadarResourceCount" aria-labelledby="label-settingRadarResourceCount" class="toggle toggle-primary toggle-sm">
-                                        <span id="label-settingRadarResourceCount" data-setting-label="settingRadarResourceCount" class="text-base-content/80 text-xs group-hover:text-base-content">Resource count</span>
-                                        <div class="tooltip" data-setting-tip="settingRadarResourceCount" data-tip="Estimated count from size/tier, bonuses excluded. Fishing shows spawned/total fish.">
-                                            <span tabindex="0" role="img" aria-label="Estimated count from size/tier, bonuses excluded. Fishing shows spawned/total fish." class="block"><i data-lucide="info" class="w-3 h-3 opacity-50"></i></span>
+                                        <span id="label-settingRadarResourceCount" data-setting-label="settingRadarResourceCount" class="text-base-content/80 text-xs group-hover:text-base-content">资源数量</span>
+                                        <div class="tooltip" data-setting-tip="settingRadarResourceCount" data-tip="按体型和等阶估算，不含加成。钓鱼显示已刷新数量和总数。">
+                                            <span tabindex="0" role="img" aria-label="按体型和等阶估算，不含加成。钓鱼显示已刷新数量和总数。" class="block"><i data-lucide="info" class="w-3 h-3 opacity-50"></i></span>
                                         </div>
                                     </label>
                                     <label class="flex items-center gap-2 p-2 rounded-lg bg-base-300 cursor-pointer group hover:bg-base-300/70 transition-colors">
                                         <input type="checkbox" data-setting="settingRadarResourceDistance" aria-labelledby="label-settingRadarResourceDistance" class="toggle toggle-primary toggle-sm">
-                                        <span id="label-settingRadarResourceDistance" data-setting-label="settingRadarResourceDistance" class="text-base-content/80 text-xs group-hover:text-base-content">Resource distance</span>
-                                        <div class="tooltip" data-setting-tip="settingRadarResourceDistance" data-tip="Distance in meters: hidden under 2 m, green under 10 m, yellow 10-19 m, orange 20 m+.">
-                                            <span tabindex="0" role="img" aria-label="Distance in meters: hidden under 2 m, green under 10 m, yellow 10-19 m, orange 20 m+." class="block"><i data-lucide="info" class="w-3 h-3 opacity-50"></i></span>
+                                        <span id="label-settingRadarResourceDistance" data-setting-label="settingRadarResourceDistance" class="text-base-content/80 text-xs group-hover:text-base-content">资源距离</span>
+                                        <div class="tooltip" data-setting-tip="settingRadarResourceDistance" data-tip="单位为米：2 米内隐藏，10 米内为绿色，10 到 19 米为黄色，20 米及以上为橙色。">
+                                            <span tabindex="0" role="img" aria-label="单位为米：2 米内隐藏，10 米内为绿色，10 到 19 米为黄色，20 米及以上为橙色。" class="block"><i data-lucide="info" class="w-3 h-3 opacity-50"></i></span>
                                         </div>
                                     </label>
                                     <label class="flex items-center gap-2 p-2 rounded-lg bg-base-300 cursor-pointer group hover:bg-base-300/70 transition-colors">
                                         <input type="checkbox" data-setting="settingRadarResourceTierBadges" aria-labelledby="label-settingRadarResourceTierBadges" class="toggle toggle-primary toggle-sm">
-                                        <span id="label-settingRadarResourceTierBadges" data-setting-label="settingRadarResourceTierBadges" class="text-base-content/80 text-xs group-hover:text-base-content">Resource tier color badges</span>
-                                        <div class="tooltip" data-setting-tip="settingRadarResourceTierBadges" data-tip="Colored squares by type instead of icons, with tier. Living creatures get a gold border.">
-                                            <span tabindex="0" role="img" aria-label="Colored squares by type instead of icons, with tier. Living creatures get a gold border." class="block"><i data-lucide="info" class="w-3 h-3 opacity-50"></i></span>
+                                        <span id="label-settingRadarResourceTierBadges" data-setting-label="settingRadarResourceTierBadges" class="text-base-content/80 text-xs group-hover:text-base-content">资源等阶色块</span>
+                                        <div class="tooltip" data-setting-tip="settingRadarResourceTierBadges" data-tip="按类型用色块代替图标，并标出等阶。活体生物带金色边框。">
+                                            <span tabindex="0" role="img" aria-label="按类型用色块代替图标，并标出等阶。活体生物带金色边框。" class="block"><i data-lucide="info" class="w-3 h-3 opacity-50"></i></span>
                                         </div>
                                     </label>
                                     <label class="flex items-center gap-2 p-2 rounded-lg bg-base-300 cursor-pointer group hover:bg-base-300/70 transition-colors">
                                         <input type="checkbox" data-setting="settingRadarResourceClusters" aria-labelledby="label-settingRadarResourceClusters" class="toggle toggle-primary toggle-sm">
-                                        <span id="label-settingRadarResourceClusters" data-setting-label="settingRadarResourceClusters" class="text-base-content/80 text-xs group-hover:text-base-content">Resource clusters</span>
-                                        <div class="tooltip" data-setting-tip="settingRadarResourceClusters" data-tip="Circles groups of nearby same-type nodes, with count and distance. Only nodes your filters show are grouped.">
-                                            <span tabindex="0" role="img" aria-label="Circles groups of nearby same-type nodes, with count and distance. Only nodes your filters show are grouped." class="block"><i data-lucide="info" class="w-3 h-3 opacity-50"></i></span>
+                                        <span id="label-settingRadarResourceClusters" data-setting-label="settingRadarResourceClusters" class="text-base-content/80 text-xs group-hover:text-base-content">资源聚集</span>
+                                        <div class="tooltip" data-setting-tip="settingRadarResourceClusters" data-tip="把附近同类资源点圈起来，并显示数量和距离。只分组当前过滤下可见的点。">
+                                            <span tabindex="0" role="img" aria-label="把附近同类资源点圈起来，并显示数量和距离。只分组当前过滤下可见的点。" class="block"><i data-lucide="info" class="w-3 h-3 opacity-50"></i></span>
                                         </div>
                                     </label>
                                     <div class="col-span-full ml-8 space-y-2">
                                         <label class="flex flex-wrap items-center gap-3">
                                             <input type="number" data-setting="settingRadarClusterRadius" data-enabled-by="settingRadarResourceClusters"
-                                                   min="10" max="100" step="5" aria-label="Cluster radius (m)" class="input input-bordered input-sm w-32 disabled:opacity-50">
-                                            <span id="label-settingRadarClusterRadius" data-setting-label="settingRadarClusterRadius" class="text-base-content/60 text-xs">Cluster radius (m)</span>
-                                            <div class="tooltip" data-setting-tip="settingRadarClusterRadius" data-tip="Groups same-type, same-tier resources within this range. Default 30 m.">
-                                                <span tabindex="0" role="img" aria-label="Groups same-type, same-tier resources within this range. Default 30 m." class="block"><i data-lucide="info" class="w-3 h-3 opacity-50"></i></span>
+                                                   min="10" max="100" step="5" aria-label="聚集半径（米）" class="input input-bordered input-sm w-32 disabled:opacity-50">
+                                            <span id="label-settingRadarClusterRadius" data-setting-label="settingRadarClusterRadius" class="text-base-content/60 text-xs">聚集半径（米）</span>
+                                            <div class="tooltip" data-setting-tip="settingRadarClusterRadius" data-tip="把此范围内、类型和等阶相同的资源分到一组。默认 30 米。">
+                                                <span tabindex="0" role="img" aria-label="把此范围内、类型和等阶相同的资源分到一组。默认 30 米。" class="block"><i data-lucide="info" class="w-3 h-3 opacity-50"></i></span>
                                             </div>
                                         </label>
                                         <label class="flex flex-wrap items-center gap-3">
                                             <input type="number" data-setting="settingRadarClusterMinSize" data-enabled-by="settingRadarResourceClusters"
-                                                   min="2" max="10" step="1" aria-label="Min nodes per cluster" class="input input-bordered input-sm w-32 disabled:opacity-50">
-                                            <span id="label-settingRadarClusterMinSize" data-setting-label="settingRadarClusterMinSize" class="text-base-content/60 text-xs">Min nodes per cluster</span>
-                                            <div class="tooltip" data-setting-tip="settingRadarClusterMinSize" data-tip="Smallest group drawn as a cluster. Default: 2.">
-                                                <span tabindex="0" role="img" aria-label="Smallest group drawn as a cluster. Default: 2." class="block"><i data-lucide="info" class="w-3 h-3 opacity-50"></i></span>
+                                                   min="2" max="10" step="1" aria-label="每组最少点数" class="input input-bordered input-sm w-32 disabled:opacity-50">
+                                            <span id="label-settingRadarClusterMinSize" data-setting-label="settingRadarClusterMinSize" class="text-base-content/60 text-xs">每组最少点数</span>
+                                            <div class="tooltip" data-setting-tip="settingRadarClusterMinSize" data-tip="少于此数量就不画成一组。默认 2。">
+                                                <span tabindex="0" role="img" aria-label="少于此数量就不画成一组。默认 2。" class="block"><i data-lucide="info" class="w-3 h-3 opacity-50"></i></span>
                                             </div>
                                         </label>
                                     </div>
@@ -184,27 +184,27 @@
         <div class="card-body phone-landscape:p-2">
             <div class="flex flex-col @md:flex-row @md:items-center @md:justify-between gap-4 phone-landscape:flex-row phone-landscape:items-center phone-landscape:gap-2">
                 <h3 class="text-xl phone-landscape:text-base font-semibold text-base-content flex flex-wrap items-center gap-3 phone-landscape:gap-2">
-                    Detected Players
+                    已检测到的玩家
                     <label class="flex items-center gap-2 p-2 rounded-lg bg-base-300 cursor-pointer group hover:bg-base-300/70 transition-colors phone-landscape:gap-1 phone-landscape:p-1">
                         <input type="checkbox" data-setting="settingPlayersDetect" aria-labelledby="label-settingPlayersDetect" class="toggle toggle-primary toggle-sm">
-                        <span id="label-settingPlayersDetect" data-setting-label="settingPlayersDetect" class="text-base-content/80 text-xs group-hover:text-base-content">Detect players</span>
-                        <div class="tooltip" data-setting-tip="settingPlayersDetect" data-tip="Tracks players in range. Off: no player list, no player counts, no flash, border or sound.">
-                            <span tabindex="0" role="img" aria-label="Tracks players in range. Off: no player list, no player counts, no flash, border or sound." class="block"><i data-lucide="info" class="w-3 h-3 opacity-50"></i></span>
+                        <span id="label-settingPlayersDetect" data-setting-label="settingPlayersDetect" class="text-base-content/80 text-xs group-hover:text-base-content">检测玩家</span>
+                        <div class="tooltip" data-setting-tip="settingPlayersDetect" data-tip="追踪范围内的玩家。关闭后没有玩家列表、人数、闪屏、边框和声音。">
+                            <span tabindex="0" role="img" aria-label="追踪范围内的玩家。关闭后没有玩家列表、人数、闪屏、边框和声音。" class="block"><i data-lucide="info" class="w-3 h-3 opacity-50"></i></span>
                         </div>
                     </label>
                 </h3>
                 <!-- Compact Player Stats (next to title) -->
                 <div id="playerStats" class="hidden stats stats-horizontal shrink-0 bg-base-300/50 shadow-sm text-xs">
                     <div id="statHostileContainer" class="stat py-1 px-3 gap-0 phone-landscape:py-0.5 phone-landscape:px-2">
-                        <div class="stat-title text-[10px]">Hostile</div>
+                        <div class="stat-title text-[10px]">敌对</div>
                         <div id="statHostile" class="stat-value text-error text-sm phone-landscape:text-xs">0</div>
                     </div>
                     <div id="statFactionContainer" class="stat py-1 px-3 gap-0 phone-landscape:py-0.5 phone-landscape:px-2">
-                        <div class="stat-title text-[10px]">Faction</div>
+                        <div class="stat-title text-[10px]">阵营</div>
                         <div id="statFaction" class="stat-value text-info text-sm phone-landscape:text-xs">0</div>
                     </div>
                     <div id="statPassiveContainer" class="stat py-1 px-3 gap-0 phone-landscape:py-0.5 phone-landscape:px-2">
-                        <div class="stat-title text-[10px]">Passive</div>
+                        <div class="stat-title text-[10px]">和平</div>
                         <div id="statPassive" class="stat-value text-success text-sm phone-landscape:text-xs">0</div>
                     </div>
                 </div>
@@ -216,7 +216,7 @@
                     <!-- Hostile Section -->
                     <div id="playersHostile" class="hidden flex-1 min-w-0 sm:min-w-[280px]">
                         <div class="flex items-center gap-2 pb-2 mb-3 border-b border-error/20 phone-landscape:pb-1 phone-landscape:mb-1">
-                            <span class="text-sm font-medium text-error">Hostiles</span>
+                            <span class="text-sm font-medium text-error">敌对</span>
                             <span id="hostileCount" class="text-xs text-base-content/50">(0)</span>
                         </div>
                         <div id="hostileList" class="player-cards grid gap-3 max-h-[400px] in-data-[players-beside]:max-h-none overflow-y-auto pr-1 scrollbar-thin phone-landscape:gap-1"></div>
@@ -225,7 +225,7 @@
                     <!-- Faction Section -->
                     <div id="playersFaction" class="hidden flex-1 min-w-0 sm:min-w-[280px]">
                         <div class="flex items-center gap-2 pb-2 mb-3 border-b border-info/20 phone-landscape:pb-1 phone-landscape:mb-1">
-                            <span class="text-sm font-medium text-info">Faction</span>
+                            <span class="text-sm font-medium text-info">阵营</span>
                             <span id="factionCount" class="text-xs text-base-content/50">(0)</span>
                         </div>
                         <div id="factionList" class="player-cards grid gap-3 max-h-[400px] in-data-[players-beside]:max-h-none overflow-y-auto pr-1 scrollbar-thin phone-landscape:gap-1"></div>
@@ -234,7 +234,7 @@
                     <!-- Passive Section -->
                     <div id="playersPassive" class="hidden flex-1 min-w-0 sm:min-w-[280px]">
                         <div class="flex items-center gap-2 pb-2 mb-3 border-b border-success/20 phone-landscape:pb-1 phone-landscape:mb-1">
-                            <span class="text-sm font-medium text-success">Passive</span>
+                            <span class="text-sm font-medium text-success">和平</span>
                             <span id="passiveCount" class="text-xs text-base-content/50">(0)</span>
                         </div>
                         <div id="passiveList" class="player-cards grid gap-3 max-h-[400px] in-data-[players-beside]:max-h-none overflow-y-auto pr-1 scrollbar-thin phone-landscape:gap-1"></div>
@@ -243,8 +243,8 @@
                     <!-- Empty State -->
                     <div id="playersEmpty" class="w-full flex flex-col items-center justify-center py-8 text-center">
                         <span class="loading loading-ring loading-lg text-primary mb-3"></span>
-                        <p class="text-sm text-base-content/40">No players detected yet</p>
-                        <p class="text-xs text-base-content/25 font-mono mt-1">Scanning...</p>
+                        <p class="text-sm text-base-content/40">尚未检测到玩家</p>
+                        <p class="text-xs text-base-content/25 font-mono mt-1">扫描中...</p>
                     </div>
                 </div>
             </div>

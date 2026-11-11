@@ -6,26 +6,26 @@
             <div class="p-2 rounded-lg bg-error/10">
                 <i data-lucide="alert-triangle" class="w-6 h-6 text-error"></i>
             </div>
-            <h3 class="text-lg font-semibold text-base-content">Reset All Settings</h3>
+            <h3 class="text-lg font-semibold text-base-content">重置全部设置</h3>
         </div>
-        <p class="text-base-content/60 mb-6">Resets every radar setting and layout preference in this browser to its default, then reloads. Your ignore list is kept. Capture interfaces, backend logs and pcap recording are saved on the radar PC and are not changed.</p>
+        <p class="text-base-content/60 mb-6">会把本浏览器里的全部雷达设置和布局偏好恢复为默认值，然后重新加载。忽略列表会保留。抓包网卡、后端日志和 pcap 录制保存在雷达电脑上，不会被改动。</p>
         <div class="modal-action">
             <form method="dialog">
-                <button class="btn btn-ghost">Cancel</button>
+                <button class="btn btn-ghost">取消</button>
             </form>
-            <button id="confirmResetSettings" class="btn btn-error">Reset Settings</button>
+            <button id="confirmResetSettings" class="btn btn-error">重置设置</button>
         </div>
     </div>
     <form method="dialog" class="modal-backdrop">
-        <button>close</button>
+        <button>关闭</button>
     </form>
 </dialog>
 
 <div class="space-y-6 stagger" data-is-host="{{.IsHost}}">
     <div class="card bg-base-200">
         <div class="card-body">
-            <h1 class="text-3xl font-bold text-base-content">Settings</h1>
-            <p class="text-base-content/60 mt-2">Logging, debug, network and reset options.</p>
+            <h1 class="text-3xl font-bold text-base-content">设置</h1>
+            <p class="text-base-content/60 mt-2">日志、调试、网络和重置选项。</p>
         </div>
     </div>
 
@@ -33,45 +33,45 @@
         <input type="checkbox" data-setting="settingUiSettingsLoggingOpen" aria-labelledby="label-settingUiSettingsLoggingOpen"/>
         <div class="collapse-title text-xl font-semibold flex items-center gap-2">
             <i data-lucide="scroll-text" class="w-5 h-5 text-info"></i>
-            <span id="label-settingUiSettingsLoggingOpen" data-setting-label="settingUiSettingsLoggingOpen">Logging</span>
+            <span id="label-settingUiSettingsLoggingOpen" data-setting-label="settingUiSettingsLoggingOpen">日志</span>
         </div>
         <div class="collapse-content">
-            <p class="text-xs text-base-content/60 mt-1 pb-2">Logs land in <code>logs/sessions/</code>, <code>logs/debug/</code>, <code>logs/errors/</code>. Backend errors are always saved to <code>logs/errors/</code>. Browser errors are saved only while this browser sends its logs (Settings &gt; Logging &gt; "Save browser logs").</p>
+            <p class="text-xs text-base-content/60 mt-1 pb-2">日志写入 <code>logs/sessions/</code>、<code>logs/debug/</code>、<code>logs/errors/</code>。后端错误始终保存到 <code>logs/errors/</code>。只有本浏览器正在发送自己的日志时，才会保存浏览器错误（设置 &gt; 日志 &gt; “保存浏览器日志”）。</p>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
                 <div>
                     <h3 class="text-sm font-semibold text-base-content/80 mb-3 flex items-center gap-2">
                         <i data-lucide="sliders-horizontal" class="w-4 h-4"></i>
-                        <span id="label-settingLogLevel" data-setting-label="settingLogLevel">Log Level</span>
-                        <div class="tooltip" data-setting-tip="settingLogLevel" data-tip="The lowest level shown, though DEBUG and INFO also need their category on. OFF disables all logging.">
-                            <span tabindex="0" role="img" aria-label="The lowest level shown, though DEBUG and INFO also need their category on. OFF disables all logging." class="block"><i data-lucide="info" class="w-3 h-3 opacity-50"></i></span>
+                        <span id="label-settingLogLevel" data-setting-label="settingLogLevel">日志级别</span>
+                        <div class="tooltip" data-setting-tip="settingLogLevel" data-tip="显示的最低级别。DEBUG 和 INFO 还需要打开对应分类。OFF 关闭全部日志。">
+                            <span tabindex="0" role="img" aria-label="显示的最低级别。DEBUG 和 INFO 还需要打开对应分类。OFF 关闭全部日志。" class="block"><i data-lucide="info" class="w-3 h-3 opacity-50"></i></span>
                         </div>
                     </h3>
                     <select data-setting="settingLogLevel" aria-labelledby="label-settingLogLevel" class="select select-bordered select-sm w-full max-w-xs">
-                        <option value="OFF">OFF - No logs</option>
-                        <option value="ERROR">ERROR - Errors only</option>
-                        <option value="WARN">WARN - Warnings & Errors</option>
-                        <option value="INFO">INFO - Info, Warnings & Errors</option>
-                        <option value="DEBUG">DEBUG - Everything</option>
+                        <option value="OFF">OFF - 不记录</option>
+                        <option value="ERROR">ERROR - 仅错误</option>
+                        <option value="WARN">WARN - 警告和错误</option>
+                        <option value="INFO">INFO - 信息、警告和错误</option>
+                        <option value="DEBUG">DEBUG - 全部</option>
                     </select>
                 </div>
 
                 <div class="@container">
                     <h3 class="text-sm font-semibold text-base-content/80 mb-3 flex items-center gap-2">
                         <i data-lucide="monitor" class="w-4 h-4"></i>
-                        Output
+                        输出
                     </h3>
                     <div class="grid grid-cols-1 @sm:grid-cols-2 gap-2">
                         <label class="flex items-center gap-2 p-2 rounded-lg bg-base-300 cursor-pointer group hover:bg-base-300/70 transition-colors">
                             <input type="checkbox" data-setting="settingLogToConsole" aria-labelledby="label-settingLogToConsole" class="toggle toggle-primary toggle-sm">
                             <i data-lucide="terminal" class="w-4 h-4 text-base-content/50"></i>
-                            <span id="label-settingLogToConsole" data-setting-label="settingLogToConsole" class="text-base-content/80 text-xs group-hover:text-base-content">Browser Console (F12)</span>
+                            <span id="label-settingLogToConsole" data-setting-label="settingLogToConsole" class="text-base-content/80 text-xs group-hover:text-base-content">浏览器控制台（F12）</span>
                         </label>
                         <label class="flex items-center gap-2 p-2 rounded-lg bg-base-300 cursor-pointer group hover:bg-base-300/70 transition-colors">
                             <input type="checkbox" data-setting="settingLogToServer" aria-labelledby="label-settingLogToServer" class="toggle toggle-primary toggle-sm">
                             <i data-lucide="server" class="w-4 h-4 text-base-content/50"></i>
-                            <span id="label-settingLogToServer" data-setting-label="settingLogToServer" class="text-base-content/80 text-xs group-hover:text-base-content">Save browser logs</span>
-                            <div class="tooltip" data-setting-tip="settingLogToServer" data-tip="Saves filtered entries on the radar PC in logs/debug/. Errors are also copied to logs/errors/.">
-                                <span tabindex="0" role="img" aria-label="Saves filtered entries on the radar PC in logs/debug/. Errors are also copied to logs/errors/." class="block"><i data-lucide="info" class="w-3 h-3 opacity-50"></i></span>
+                            <span id="label-settingLogToServer" data-setting-label="settingLogToServer" class="text-base-content/80 text-xs group-hover:text-base-content">保存浏览器日志</span>
+                            <div class="tooltip" data-setting-tip="settingLogToServer" data-tip="把过滤后的条目保存到雷达电脑的 logs/debug/。错误还会复制到 logs/errors/。">
+                                <span tabindex="0" role="img" aria-label="把过滤后的条目保存到雷达电脑的 logs/debug/。错误还会复制到 logs/errors/。" class="block"><i data-lucide="info" class="w-3 h-3 opacity-50"></i></span>
                             </div>
                         </label>
                     </div>
@@ -81,64 +81,64 @@
             <div class="mt-4">
                 <h3 class="text-sm font-semibold text-base-content/80 mb-3 flex items-center gap-2">
                     <i data-lucide="filter" class="w-4 h-4"></i>
-                    Category Filters
-                    <span class="text-xs text-base-content/50 font-normal">(applies to DEBUG & INFO only)</span>
+                    分类过滤
+                    <span class="text-xs text-base-content/50 font-normal">（仅作用于 DEBUG 和 INFO）</span>
                 </h3>
                 <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-2">
                         <label class="flex items-center gap-2 p-2 rounded-lg bg-base-300 cursor-pointer group hover:bg-base-300/70 transition-colors">
                             <input type="checkbox" data-setting="settingLogCategorySystem" aria-labelledby="label-settingLogCategorySystem" class="checkbox checkbox-primary checkbox-xs">
-                            <span id="label-settingLogCategorySystem" data-setting-label="settingLogCategorySystem" class="text-base-content/80 text-xs group-hover:text-base-content">System</span>
-                            <div class="tooltip" data-setting-tip="settingLogCategorySystem" data-tip="Keep DEBUG and INFO entries of this area. WARN and above ignore this filter.">
-                                <span tabindex="0" role="img" aria-label="Keep DEBUG and INFO entries of this area. WARN and above ignore this filter." class="block"><i data-lucide="info" class="w-3 h-3 opacity-50"></i></span>
+                            <span id="label-settingLogCategorySystem" data-setting-label="settingLogCategorySystem" class="text-base-content/80 text-xs group-hover:text-base-content">系统</span>
+                            <div class="tooltip" data-setting-tip="settingLogCategorySystem" data-tip="保留该分类的 DEBUG 与 INFO。WARN 及以上不受此过滤影响。">
+                                <span tabindex="0" role="img" aria-label="保留该分类的 DEBUG 与 INFO。WARN 及以上不受此过滤影响。" class="block"><i data-lucide="info" class="w-3 h-3 opacity-50"></i></span>
                             </div>
                         </label>
                         <label class="flex items-center gap-2 p-2 rounded-lg bg-base-300 cursor-pointer group hover:bg-base-300/70 transition-colors">
                             <input type="checkbox" data-setting="settingLogCategoryNetwork" aria-labelledby="label-settingLogCategoryNetwork" class="checkbox checkbox-primary checkbox-xs">
-                            <span id="label-settingLogCategoryNetwork" data-setting-label="settingLogCategoryNetwork" class="text-base-content/80 text-xs group-hover:text-base-content">Network</span>
-                            <div class="tooltip" data-setting-tip="settingLogCategoryNetwork" data-tip="Keep DEBUG and INFO entries of this area. WARN and above ignore this filter.">
-                                <span tabindex="0" role="img" aria-label="Keep DEBUG and INFO entries of this area. WARN and above ignore this filter." class="block"><i data-lucide="info" class="w-3 h-3 opacity-50"></i></span>
+                            <span id="label-settingLogCategoryNetwork" data-setting-label="settingLogCategoryNetwork" class="text-base-content/80 text-xs group-hover:text-base-content">网络</span>
+                            <div class="tooltip" data-setting-tip="settingLogCategoryNetwork" data-tip="保留该分类的 DEBUG 与 INFO。WARN 及以上不受此过滤影响。">
+                                <span tabindex="0" role="img" aria-label="保留该分类的 DEBUG 与 INFO。WARN 及以上不受此过滤影响。" class="block"><i data-lucide="info" class="w-3 h-3 opacity-50"></i></span>
                             </div>
                         </label>
                         <label class="flex items-center gap-2 p-2 rounded-lg bg-base-300 cursor-pointer group hover:bg-base-300/70 transition-colors">
                             <input type="checkbox" data-setting="settingLogCategoryMap" aria-labelledby="label-settingLogCategoryMap" class="checkbox checkbox-primary checkbox-xs">
-                            <span id="label-settingLogCategoryMap" data-setting-label="settingLogCategoryMap" class="text-base-content/80 text-xs group-hover:text-base-content">Map</span>
-                            <div class="tooltip" data-setting-tip="settingLogCategoryMap" data-tip="Keep DEBUG and INFO entries of this area. WARN and above ignore this filter.">
-                                <span tabindex="0" role="img" aria-label="Keep DEBUG and INFO entries of this area. WARN and above ignore this filter." class="block"><i data-lucide="info" class="w-3 h-3 opacity-50"></i></span>
+                            <span id="label-settingLogCategoryMap" data-setting-label="settingLogCategoryMap" class="text-base-content/80 text-xs group-hover:text-base-content">地图</span>
+                            <div class="tooltip" data-setting-tip="settingLogCategoryMap" data-tip="保留该分类的 DEBUG 与 INFO。WARN 及以上不受此过滤影响。">
+                                <span tabindex="0" role="img" aria-label="保留该分类的 DEBUG 与 INFO。WARN 及以上不受此过滤影响。" class="block"><i data-lucide="info" class="w-3 h-3 opacity-50"></i></span>
                             </div>
                         </label>
                         <label class="flex items-center gap-2 p-2 rounded-lg bg-base-300 cursor-pointer group hover:bg-base-300/70 transition-colors">
                             <input type="checkbox" data-setting="settingLogCategoryPlayers" aria-labelledby="label-settingLogCategoryPlayers" class="checkbox checkbox-primary checkbox-xs">
-                            <span id="label-settingLogCategoryPlayers" data-setting-label="settingLogCategoryPlayers" class="text-base-content/80 text-xs group-hover:text-base-content">Players</span>
-                            <div class="tooltip" data-setting-tip="settingLogCategoryPlayers" data-tip="Keep DEBUG and INFO entries of this area. WARN and above ignore this filter.">
-                                <span tabindex="0" role="img" aria-label="Keep DEBUG and INFO entries of this area. WARN and above ignore this filter." class="block"><i data-lucide="info" class="w-3 h-3 opacity-50"></i></span>
+                            <span id="label-settingLogCategoryPlayers" data-setting-label="settingLogCategoryPlayers" class="text-base-content/80 text-xs group-hover:text-base-content">玩家</span>
+                            <div class="tooltip" data-setting-tip="settingLogCategoryPlayers" data-tip="保留该分类的 DEBUG 与 INFO。WARN 及以上不受此过滤影响。">
+                                <span tabindex="0" role="img" aria-label="保留该分类的 DEBUG 与 INFO。WARN 及以上不受此过滤影响。" class="block"><i data-lucide="info" class="w-3 h-3 opacity-50"></i></span>
                             </div>
                         </label>
                         <label class="flex items-center gap-2 p-2 rounded-lg bg-base-300 cursor-pointer group hover:bg-base-300/70 transition-colors">
                             <input type="checkbox" data-setting="settingLogCategoryMobs" aria-labelledby="label-settingLogCategoryMobs" class="checkbox checkbox-primary checkbox-xs">
-                            <span id="label-settingLogCategoryMobs" data-setting-label="settingLogCategoryMobs" class="text-base-content/80 text-xs group-hover:text-base-content">Mobs</span>
-                            <div class="tooltip" data-setting-tip="settingLogCategoryMobs" data-tip="Keep DEBUG and INFO entries of this area. WARN and above ignore this filter.">
-                                <span tabindex="0" role="img" aria-label="Keep DEBUG and INFO entries of this area. WARN and above ignore this filter." class="block"><i data-lucide="info" class="w-3 h-3 opacity-50"></i></span>
+                            <span id="label-settingLogCategoryMobs" data-setting-label="settingLogCategoryMobs" class="text-base-content/80 text-xs group-hover:text-base-content">怪物</span>
+                            <div class="tooltip" data-setting-tip="settingLogCategoryMobs" data-tip="保留该分类的 DEBUG 与 INFO。WARN 及以上不受此过滤影响。">
+                                <span tabindex="0" role="img" aria-label="保留该分类的 DEBUG 与 INFO。WARN 及以上不受此过滤影响。" class="block"><i data-lucide="info" class="w-3 h-3 opacity-50"></i></span>
                             </div>
                         </label>
                         <label class="flex items-center gap-2 p-2 rounded-lg bg-base-300 cursor-pointer group hover:bg-base-300/70 transition-colors">
                             <input type="checkbox" data-setting="settingLogCategoryResources" aria-labelledby="label-settingLogCategoryResources" class="checkbox checkbox-primary checkbox-xs">
-                            <span id="label-settingLogCategoryResources" data-setting-label="settingLogCategoryResources" class="text-base-content/80 text-xs group-hover:text-base-content">Harvestables</span>
-                            <div class="tooltip" data-setting-tip="settingLogCategoryResources" data-tip="Keep DEBUG and INFO entries of this area. WARN and above ignore this filter.">
-                                <span tabindex="0" role="img" aria-label="Keep DEBUG and INFO entries of this area. WARN and above ignore this filter." class="block"><i data-lucide="info" class="w-3 h-3 opacity-50"></i></span>
+                            <span id="label-settingLogCategoryResources" data-setting-label="settingLogCategoryResources" class="text-base-content/80 text-xs group-hover:text-base-content">可采集物</span>
+                            <div class="tooltip" data-setting-tip="settingLogCategoryResources" data-tip="保留该分类的 DEBUG 与 INFO。WARN 及以上不受此过滤影响。">
+                                <span tabindex="0" role="img" aria-label="保留该分类的 DEBUG 与 INFO。WARN 及以上不受此过滤影响。" class="block"><i data-lucide="info" class="w-3 h-3 opacity-50"></i></span>
                             </div>
                         </label>
                         <label class="flex items-center gap-2 p-2 rounded-lg bg-base-300 cursor-pointer group hover:bg-base-300/70 transition-colors">
                             <input type="checkbox" data-setting="settingLogCategoryDungeons" aria-labelledby="label-settingLogCategoryDungeons" class="checkbox checkbox-primary checkbox-xs">
-                            <span id="label-settingLogCategoryDungeons" data-setting-label="settingLogCategoryDungeons" class="text-base-content/80 text-xs group-hover:text-base-content">Dungeons</span>
-                            <div class="tooltip" data-setting-tip="settingLogCategoryDungeons" data-tip="Keep DEBUG and INFO entries of this area. WARN and above ignore this filter.">
-                                <span tabindex="0" role="img" aria-label="Keep DEBUG and INFO entries of this area. WARN and above ignore this filter." class="block"><i data-lucide="info" class="w-3 h-3 opacity-50"></i></span>
+                            <span id="label-settingLogCategoryDungeons" data-setting-label="settingLogCategoryDungeons" class="text-base-content/80 text-xs group-hover:text-base-content">地下城</span>
+                            <div class="tooltip" data-setting-tip="settingLogCategoryDungeons" data-tip="保留该分类的 DEBUG 与 INFO。WARN 及以上不受此过滤影响。">
+                                <span tabindex="0" role="img" aria-label="保留该分类的 DEBUG 与 INFO。WARN 及以上不受此过滤影响。" class="block"><i data-lucide="info" class="w-3 h-3 opacity-50"></i></span>
                             </div>
                         </label>
                         <label class="flex items-center gap-2 p-2 rounded-lg bg-base-300 cursor-pointer group hover:bg-base-300/70 transition-colors">
                             <input type="checkbox" data-setting="settingLogCategoryFishing" aria-labelledby="label-settingLogCategoryFishing" class="checkbox checkbox-primary checkbox-xs">
-                            <span id="label-settingLogCategoryFishing" data-setting-label="settingLogCategoryFishing" class="text-base-content/80 text-xs group-hover:text-base-content">Fishing</span>
-                            <div class="tooltip" data-setting-tip="settingLogCategoryFishing" data-tip="Keep DEBUG and INFO entries of this area. WARN and above ignore this filter.">
-                                <span tabindex="0" role="img" aria-label="Keep DEBUG and INFO entries of this area. WARN and above ignore this filter." class="block"><i data-lucide="info" class="w-3 h-3 opacity-50"></i></span>
+                            <span id="label-settingLogCategoryFishing" data-setting-label="settingLogCategoryFishing" class="text-base-content/80 text-xs group-hover:text-base-content">钓鱼</span>
+                            <div class="tooltip" data-setting-tip="settingLogCategoryFishing" data-tip="保留该分类的 DEBUG 与 INFO。WARN 及以上不受此过滤影响。">
+                                <span tabindex="0" role="img" aria-label="保留该分类的 DEBUG 与 INFO。WARN 及以上不受此过滤影响。" class="block"><i data-lucide="info" class="w-3 h-3 opacity-50"></i></span>
                             </div>
                         </label>
                 </div>
@@ -150,38 +150,38 @@
         <input type="checkbox" data-setting="settingUiSettingsDebugOpen" aria-labelledby="label-settingUiSettingsDebugOpen"/>
         <div class="collapse-title text-xl font-semibold flex items-center gap-2">
             <i data-lucide="bug" class="w-5 h-5 text-warning"></i>
-            <span id="label-settingUiSettingsDebugOpen" data-setting-label="settingUiSettingsDebugOpen">Debug</span>
-            <span class="text-xs text-base-content/50 ml-auto mr-6">Advanced</span>
+            <span id="label-settingUiSettingsDebugOpen" data-setting-label="settingUiSettingsDebugOpen">调试</span>
+            <span class="text-xs text-base-content/50 ml-auto mr-6">高级</span>
         </div>
         <div class="collapse-content space-y-4">
             <section>
                 <h3 class="text-sm font-semibold text-base-content/80 mb-3 flex items-center gap-2">
                     <i data-lucide="skull" class="w-4 h-4"></i>
-                    Enemies
+                    怪物
                 </h3>
                 <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-2">
                     <label class="flex items-center gap-2 p-2 rounded-lg bg-base-300 cursor-pointer group hover:bg-base-300/70 transition-colors">
                         <input type="checkbox" data-setting="settingDebugEnemiesUnidentified" aria-labelledby="label-settingDebugEnemiesUnidentified" class="toggle toggle-primary toggle-sm">
-                        <span id="label-settingDebugEnemiesUnidentified" data-setting-label="settingDebugEnemiesUnidentified" class="text-base-content/80 text-xs group-hover:text-base-content">Show unidentified enemies</span>
-                        <div class="tooltip" data-setting-tip="settingDebugEnemiesUnidentified" data-tip="Shows enemies missing from mob data, usually new post-update mobs. Type filters skip them.">
-                            <span tabindex="0" role="img" aria-label="Shows enemies missing from mob data, usually new post-update mobs. Type filters skip them." class="block"><i data-lucide="info" class="w-3 h-3 opacity-50"></i></span>
+                        <span id="label-settingDebugEnemiesUnidentified" data-setting-label="settingDebugEnemiesUnidentified" class="text-base-content/80 text-xs group-hover:text-base-content">显示未识别敌人</span>
+                        <div class="tooltip" data-setting-tip="settingDebugEnemiesUnidentified" data-tip="显示怪物数据里没有的敌人，通常是更新后新增的怪物。类型过滤不会作用于它们。">
+                            <span tabindex="0" role="img" aria-label="显示怪物数据里没有的敌人，通常是更新后新增的怪物。类型过滤不会作用于它们。" class="block"><i data-lucide="info" class="w-3 h-3 opacity-50"></i></span>
                         </div>
                     </label>
                     <label class="flex items-center gap-2 p-2 rounded-lg bg-base-300 cursor-pointer group hover:bg-base-300/70 transition-colors">
                         <input type="checkbox" data-setting="settingDebugEnemiesTypeId" class="toggle toggle-primary toggle-sm">
-                        <span id="label-settingDebugEnemiesTypeId" data-setting-label="settingDebugEnemiesTypeId" class="text-base-content/80 text-xs group-hover:text-base-content">Show ID</span>
+                        <span id="label-settingDebugEnemiesTypeId" data-setting-label="settingDebugEnemiesTypeId" class="text-base-content/80 text-xs group-hover:text-base-content">显示 ID</span>
                     </label>
                     <label class="flex items-center gap-2 p-2 rounded-lg bg-base-300 cursor-pointer group hover:bg-base-300/70 transition-colors">
                         <input type="checkbox" data-setting="settingDebugEnemiesTier" class="toggle toggle-primary toggle-sm">
-                        <span id="label-settingDebugEnemiesTier" data-setting-label="settingDebugEnemiesTier" class="text-base-content/80 text-xs group-hover:text-base-content">Show Tier</span>
+                        <span id="label-settingDebugEnemiesTier" data-setting-label="settingDebugEnemiesTier" class="text-base-content/80 text-xs group-hover:text-base-content">显示等阶</span>
                     </label>
                     <label class="flex items-center gap-2 p-2 rounded-lg bg-base-300 cursor-pointer group hover:bg-base-300/70 transition-colors">
                         <input type="checkbox" data-setting="settingDebugEnemiesName" class="toggle toggle-primary toggle-sm">
-                        <span id="label-settingDebugEnemiesName" data-setting-label="settingDebugEnemiesName" class="text-base-content/80 text-xs group-hover:text-base-content">Show Name</span>
+                        <span id="label-settingDebugEnemiesName" data-setting-label="settingDebugEnemiesName" class="text-base-content/80 text-xs group-hover:text-base-content">显示名称</span>
                     </label>
                     <label class="flex items-center gap-2 p-2 rounded-lg bg-base-300 cursor-pointer group hover:bg-base-300/70 transition-colors">
                         <input type="checkbox" data-setting="settingDebugEnemiesCategoryBadge" class="toggle toggle-primary toggle-sm">
-                        <span id="label-settingDebugEnemiesCategoryBadge" data-setting-label="settingDebugEnemiesCategoryBadge" class="text-base-content/80 text-xs group-hover:text-base-content">Show Category Badge</span>
+                        <span id="label-settingDebugEnemiesCategoryBadge" data-setting-label="settingDebugEnemiesCategoryBadge" class="text-base-content/80 text-xs group-hover:text-base-content">显示分类角标</span>
                     </label>
                 </div>
             </section>
@@ -189,21 +189,21 @@
                 <section>
                     <h3 class="text-sm font-semibold text-base-content/80 mb-3 flex items-center gap-2">
                         <i data-lucide="gem" class="w-4 h-4"></i>
-                        Resources
+                        资源
                     </h3>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
                         <label class="flex items-center gap-2 p-2 rounded-lg bg-base-300 cursor-pointer group hover:bg-base-300/70 transition-colors">
                             <input type="checkbox" data-setting="settingDebugResourcesTypeId" aria-labelledby="label-settingDebugResourcesTypeId" class="toggle toggle-primary toggle-sm">
-                            <span id="label-settingDebugResourcesTypeId" data-setting-label="settingDebugResourcesTypeId" class="text-base-content/80 text-xs group-hover:text-base-content">Show ID</span>
-                            <div class="tooltip" data-setting-tip="settingDebugResourcesTypeId" data-tip="Draws the internal type ID on resource nodes and living resources (debug).">
-                                <span tabindex="0" role="img" aria-label="Draws the internal type ID on resource nodes and living resources (debug)." class="block"><i data-lucide="info" class="w-3 h-3 opacity-50"></i></span>
+                            <span id="label-settingDebugResourcesTypeId" data-setting-label="settingDebugResourcesTypeId" class="text-base-content/80 text-xs group-hover:text-base-content">显示 ID</span>
+                            <div class="tooltip" data-setting-tip="settingDebugResourcesTypeId" data-tip="在资源点和活体资源上绘制内部类型 ID（调试）。">
+                                <span tabindex="0" role="img" aria-label="在资源点和活体资源上绘制内部类型 ID（调试）。" class="block"><i data-lucide="info" class="w-3 h-3 opacity-50"></i></span>
                             </div>
                         </label>
                         <label class="flex items-center gap-2 p-2 rounded-lg bg-base-300 cursor-pointer group hover:bg-base-300/70 transition-colors">
                             <input type="checkbox" data-setting="settingDebugResourcesDbName" aria-labelledby="label-settingDebugResourcesDbName" class="toggle toggle-primary toggle-sm">
-                            <span id="label-settingDebugResourcesDbName" data-setting-label="settingDebugResourcesDbName" class="text-base-content/80 text-xs group-hover:text-base-content">Show DB Name</span>
-                            <div class="tooltip" data-setting-tip="settingDebugResourcesDbName" data-tip="Shows the DB name mapped from the wire type ID (debug, for offset verification).">
-                                <span tabindex="0" role="img" aria-label="Shows the DB name mapped from the wire type ID (debug, for offset verification)." class="block"><i data-lucide="info" class="w-3 h-3 opacity-50"></i></span>
+                            <span id="label-settingDebugResourcesDbName" data-setting-label="settingDebugResourcesDbName" class="text-base-content/80 text-xs group-hover:text-base-content">显示数据库名</span>
+                            <div class="tooltip" data-setting-tip="settingDebugResourcesDbName" data-tip="显示由线路类型 ID 映射出的数据库名（调试，用于核对偏移）。">
+                                <span tabindex="0" role="img" aria-label="显示由线路类型 ID 映射出的数据库名（调试，用于核对偏移）。" class="block"><i data-lucide="info" class="w-3 h-3 opacity-50"></i></span>
                             </div>
                         </label>
                     </div>
@@ -211,63 +211,63 @@
                 <section>
                     <h3 class="text-sm font-semibold text-base-content/80 mb-3 flex items-center gap-2">
                         <i data-lucide="users" class="w-4 h-4"></i>
-                        Players
+                        玩家
                     </h3>
                     <div class="grid grid-cols-1 gap-2 max-w-xl">
                         <label class="flex items-center gap-2 p-2 rounded-lg bg-base-300 cursor-pointer group hover:bg-base-300/70 transition-colors">
                             <input type="checkbox" data-setting="settingDebugPlayersIds" class="toggle toggle-primary toggle-sm">
-                            <span id="label-settingDebugPlayersIds" data-setting-label="settingDebugPlayersIds" class="text-base-content/80 text-xs group-hover:text-base-content">Show Player IDs</span>
+                            <span id="label-settingDebugPlayersIds" data-setting-label="settingDebugPlayersIds" class="text-base-content/80 text-xs group-hover:text-base-content">显示玩家 ID</span>
                         </label>
                     </div>
                 </section>
                 <section>
                     <h3 class="text-sm font-semibold text-base-content/80 mb-3 flex items-center gap-2">
                         <i data-lucide="cloud-fog" class="w-4 h-4"></i>
-                        Mists
+                        迷雾
                     </h3>
                     <div class="grid grid-cols-1 gap-2 max-w-xl">
                         <label class="flex items-center gap-2 p-2 rounded-lg bg-base-300 cursor-pointer group hover:bg-base-300/70 transition-colors">
                             <input type="checkbox" data-setting="settingDebugMistsWispIds" class="toggle toggle-primary toggle-sm">
-                            <span id="label-settingDebugMistsWispIds" data-setting-label="settingDebugMistsWispIds" class="text-base-content/80 text-xs group-hover:text-base-content">Show wisp ID (debug)</span>
+                            <span id="label-settingDebugMistsWispIds" data-setting-label="settingDebugMistsWispIds" class="text-base-content/80 text-xs group-hover:text-base-content">显示 Wisp ID（调试）</span>
                         </label>
                     </div>
                 </section>
                 <section>
                     <h3 class="text-sm font-semibold text-base-content/80 mb-3 flex items-center gap-2">
                         <i data-lucide="zap" class="w-4 h-4"></i>
-                        Network traffic
+                        网络流量
                     </h3>
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
                         <label class="flex items-center gap-2 p-2 rounded-lg bg-base-300 cursor-pointer group hover:bg-base-300/70 transition-colors">
                             <input type="checkbox" data-setting="settingDebugWsCoalescing" aria-labelledby="label-settingDebugWsCoalescing" class="toggle toggle-primary toggle-sm">
-                            <span id="label-settingDebugWsCoalescing" data-setting-label="settingDebugWsCoalescing" class="text-base-content/80 text-xs group-hover:text-base-content">Merge entity updates per frame</span>
-                            <div class="tooltip" data-setting-tip="settingDebugWsCoalescing" data-tip="Keeps only the latest move, health and regen update per entity each frame.">
-                                <span tabindex="0" role="img" aria-label="Keeps only the latest move, health and regen update per entity each frame." class="block"><i data-lucide="info" class="w-3 h-3 opacity-50"></i></span>
+                            <span id="label-settingDebugWsCoalescing" data-setting-label="settingDebugWsCoalescing" class="text-base-content/80 text-xs group-hover:text-base-content">每帧合并实体更新</span>
+                            <div class="tooltip" data-setting-tip="settingDebugWsCoalescing" data-tip="每个实体每帧只保留最新的移动、生命和回复更新。">
+                                <span tabindex="0" role="img" aria-label="每个实体每帧只保留最新的移动、生命和回复更新。" class="block"><i data-lucide="info" class="w-3 h-3 opacity-50"></i></span>
                             </div>
                         </label>
                         <label class="flex items-center gap-2 p-2 rounded-lg bg-base-300 cursor-pointer group hover:bg-base-300/70 transition-colors">
                             <input type="checkbox" aria-labelledby="label-settingDebugPcapRecording" data-setting="settingDebugPcapRecording" class="toggle toggle-primary toggle-sm"{{if not .IsHost}} disabled{{end}}>
-                            <span id="label-settingDebugPcapRecording" data-setting-label="settingDebugPcapRecording" class="text-base-content/80 text-xs group-hover:text-base-content">Record Network Capture (pcap)</span>
-                            <div class="tooltip" data-setting-tip="settingDebugPcapRecording" data-tip="Records UDP 5056 traffic to logs/captures/, one file per interface. PC-only setting.">
-                                <span tabindex="0" role="img" aria-label="Records UDP 5056 traffic to logs/captures/, one file per interface. PC-only setting." class="block"><i data-lucide="info" class="w-3 h-3 opacity-50"></i></span>
+                            <span id="label-settingDebugPcapRecording" data-setting-label="settingDebugPcapRecording" class="text-base-content/80 text-xs group-hover:text-base-content">录制网络抓包（pcap）</span>
+                            <div class="tooltip" data-setting-tip="settingDebugPcapRecording" data-tip="把 UDP 5056 流量录到 logs/captures/，每个网卡一个文件。仅限本机。">
+                                <span tabindex="0" role="img" aria-label="把 UDP 5056 流量录到 logs/captures/，每个网卡一个文件。仅限本机。" class="block"><i data-lucide="info" class="w-3 h-3 opacity-50"></i></span>
                             </div>
-                            {{if not .IsHost}}<span class="text-xs text-base-content/50">Only the PC running the radar can change this.</span>{{end}}
+                            {{if not .IsHost}}<span class="text-xs text-base-content/50">只有运行雷达的电脑可以修改此项。</span>{{end}}
                         </label>
                     </div>
                 </section>
                 <section>
                     <h3 class="text-sm font-semibold text-base-content/80 mb-3 flex items-center gap-2">
                         <i data-lucide="hard-drive" class="w-4 h-4"></i>
-                        Backend logs
+                        后端日志
                     </h3>
                     <div class="grid grid-cols-1 gap-2 max-w-xl">
                         <label class="flex items-center gap-2 p-2 rounded-lg bg-base-300 cursor-pointer group hover:bg-base-300/70 transition-colors">
                             <input type="checkbox" aria-labelledby="label-settingDebugBackendLogs" data-setting="settingDebugBackendLogs" class="toggle toggle-primary toggle-sm"{{if not .IsHost}} disabled{{end}}>
-                            <span id="label-settingDebugBackendLogs" data-setting-label="settingDebugBackendLogs" class="text-base-content/80 text-xs group-hover:text-base-content">Save backend logs</span>
-                            <div class="tooltip" data-setting-tip="settingDebugBackendLogs" data-tip="Logs one line per game event to logs/sessions/. Only changeable on the radar PC.">
-                                <span tabindex="0" role="img" aria-label="Logs one line per game event to logs/sessions/. Only changeable on the radar PC." class="block"><i data-lucide="info" class="w-3 h-3 opacity-50"></i></span>
+                            <span id="label-settingDebugBackendLogs" data-setting-label="settingDebugBackendLogs" class="text-base-content/80 text-xs group-hover:text-base-content">保存后端日志</span>
+                            <div class="tooltip" data-setting-tip="settingDebugBackendLogs" data-tip="把每条游戏事件记一行到 logs/sessions/。只能在运行雷达的电脑上修改。">
+                                <span tabindex="0" role="img" aria-label="把每条游戏事件记一行到 logs/sessions/。只能在运行雷达的电脑上修改。" class="block"><i data-lucide="info" class="w-3 h-3 opacity-50"></i></span>
                             </div>
-                            {{if not .IsHost}}<span class="text-xs text-base-content/50">Only the PC running the radar can change this.</span>{{end}}
+                            {{if not .IsHost}}<span class="text-xs text-base-content/50">只有运行雷达的电脑可以修改此项。</span>{{end}}
                         </label>
                     </div>
                 </section>
@@ -275,9 +275,9 @@
             <div class="flex flex-wrap items-center gap-4">
                 <button id="downloadLogsBtn" class="btn btn-primary btn-sm">
                     <i data-lucide="download" class="w-4 h-4"></i>
-                    Export Debug Data
+                    导出调试数据
                 </button>
-                <span class="flex-1 basis-40 max-w-max text-xs text-base-content/50">Downloads registry settings, UI state and backend logging values as JSON. The ignore list is not included.</span>
+                <span class="flex-1 basis-40 max-w-max text-xs text-base-content/50">将注册表设置、界面状态和后端日志开关下载为 JSON。不包含忽略列表。</span>
             </div>
         </div>
     </div>
@@ -286,10 +286,10 @@
         <input type="checkbox" data-setting="settingUiSettingsNetworkOpen" aria-labelledby="label-settingUiSettingsNetworkOpen"/>
         <div class="collapse-title text-xl font-semibold flex items-center gap-2">
             <i data-lucide="wifi" class="w-5 h-5 text-primary"></i>
-            <span id="label-settingUiSettingsNetworkOpen" data-setting-label="settingUiSettingsNetworkOpen">Network</span>
+            <span id="label-settingUiSettingsNetworkOpen" data-setting-label="settingUiSettingsNetworkOpen">网络</span>
         </div>
         <div class="collapse-content">
-            <div id="network-section" class="text-base-content/80"{{if not .IsHost}} data-locked{{end}}>Loading network configuration…</div>
+            <div id="network-section" class="text-base-content/80"{{if not .IsHost}} data-locked{{end}}>正在加载网络配置…</div>
         </div>
     </div>
 
@@ -297,13 +297,13 @@
         <input type="checkbox" data-setting="settingUiSettingsDangerZoneOpen" aria-labelledby="label-settingUiSettingsDangerZoneOpen"/>
         <div class="collapse-title text-lg font-semibold text-error flex items-center gap-2">
             <i data-lucide="alert-octagon" class="w-5 h-5"></i>
-            <span id="label-settingUiSettingsDangerZoneOpen" data-setting-label="settingUiSettingsDangerZoneOpen">Danger Zone</span>
+            <span id="label-settingUiSettingsDangerZoneOpen" data-setting-label="settingUiSettingsDangerZoneOpen">危险操作</span>
         </div>
         <div class="collapse-content">
             <div class="flex flex-wrap gap-3">
                 <button id="resetSettingsBtn" class="btn btn-outline btn-error btn-sm">
                     <i data-lucide="rotate-ccw" class="w-4 h-4"></i>
-                    Reset All Settings
+                    重置全部设置
                 </button>
             </div>
         </div>

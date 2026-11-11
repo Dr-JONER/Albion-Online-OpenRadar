@@ -231,13 +231,13 @@ func noStore(h http.Handler) http.Handler {
 func (s *HTTPServer) renderPage(w http.ResponseWriter, r *http.Request, page string) {
 	// Get page title
 	titles := map[string]string{
-		"radar":      "Radar",
-		"players":    "Players",
-		"resources":  "Resources",
-		"enemies":    "Enemies",
-		"chests":     "Chests",
-		"ignorelist": "Ignore List",
-		"settings":   "Settings",
+		"radar":      "雷达",
+		"players":    "玩家",
+		"resources":  "资源",
+		"enemies":    "怪物",
+		"chests":     "宝箱",
+		"ignorelist": "忽略列表",
+		"settings":   "设置",
 	}
 	title := titles[page]
 	if title == "" && page != "" {

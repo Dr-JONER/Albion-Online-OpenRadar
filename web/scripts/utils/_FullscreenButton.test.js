@@ -11,7 +11,7 @@ function mountButton(page = 'radar') {
         <main id="page-content" data-page="${page}"></main>
         <button id="fullscreenToggleBtn" style="display:none;">
             <i data-lucide="maximize"></i>
-            <span>Fullscreen</span>
+            <span>全屏</span>
         </button>
     `;
     return document.getElementById('fullscreenToggleBtn');
@@ -118,7 +118,7 @@ describe('fullscreenchange rendering', () => {
         FullscreenButton.initFullscreenButton(button);
         stub(document, 'fullscreenElement', document.documentElement);
         document.dispatchEvent(new Event('fullscreenchange'));
-        expect(button.querySelector('span').textContent).toBe('Exit Fullscreen');
+        expect(button.querySelector('span').textContent).toBe('退出全屏');
         expect(button.querySelector('[data-lucide]').dataset.lucide).toBe('minimize');
         expect(window.lucide.createIcons).toHaveBeenCalledWith({root: button});
     });
@@ -130,7 +130,7 @@ describe('fullscreenchange rendering', () => {
         document.dispatchEvent(new Event('fullscreenchange'));
         stub(document, 'fullscreenElement', null);
         document.dispatchEvent(new Event('fullscreenchange'));
-        expect(button.querySelector('span').textContent).toBe('Fullscreen');
+        expect(button.querySelector('span').textContent).toBe('全屏');
         expect(button.querySelector('[data-lucide]').dataset.lucide).toBe('maximize');
     });
 });

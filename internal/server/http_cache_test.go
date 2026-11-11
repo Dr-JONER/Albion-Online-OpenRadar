@@ -371,10 +371,10 @@ func TestSettingsHostLock(t *testing.T) {
 				}
 			}
 
-			if !strings.Contains(lan, "Only the PC running the radar can change this.") {
+			if !strings.Contains(lan, "只有运行雷达的电脑可以修改此项。") {
 				t.Error("LAN response missing the host-lock reason text")
 			}
-			if strings.Contains(host, "Only the PC running the radar can change this.") {
+			if strings.Contains(host, "只有运行雷达的电脑可以修改此项。") {
 				t.Error("host response must not show the host-lock reason text")
 			}
 

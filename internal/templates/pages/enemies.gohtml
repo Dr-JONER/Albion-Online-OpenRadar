@@ -19,7 +19,7 @@
         <input type="checkbox" data-setting="settingUiEnemiesClassicOpen" aria-labelledby="label-settingUiEnemiesClassicOpen"/>
         <div class="collapse-title text-xl font-semibold flex items-center gap-2">
             <i data-lucide="swords" class="w-5 h-5"></i>
-            <span id="label-settingUiEnemiesClassicOpen" data-setting-label="settingUiEnemiesClassicOpen">Classic Enemies</span>
+            <span id="label-settingUiEnemiesClassicOpen" data-setting-label="settingUiEnemiesClassicOpen">经典怪物</span>
         </div>
         <div class="collapse-content">
             <div class="pt-2">
@@ -27,15 +27,15 @@
                     <label class="flex items-center gap-2 p-2 rounded-lg bg-base-300 cursor-pointer group hover:bg-base-300/70 transition-colors">
                         <input type="checkbox" data-setting="settingEnemiesNormal" aria-labelledby="label-settingEnemiesNormal" class="checkbox checkbox-info checkbox-xs">
                         <span class="w-3 h-3 rounded-full bg-tier-3"></span>
-                        <span id="label-settingEnemiesNormal" data-setting-label="settingEnemiesNormal" class="text-base-content/80 text-xs group-hover:text-base-content">Normal</span>
+                        <span id="label-settingEnemiesNormal" data-setting-label="settingEnemiesNormal" class="text-base-content/80 text-xs group-hover:text-base-content">普通</span>
                     </label>
 
                     <label class="flex items-center gap-2 p-2 rounded-lg bg-base-300 cursor-pointer group hover:bg-base-300/70 transition-colors">
                         <input type="checkbox" data-setting="settingEnemiesChampion" aria-labelledby="label-settingEnemiesChampion" class="checkbox checkbox-secondary checkbox-xs">
                         <span class="w-3 h-3 rounded-full bg-tier-4"></span>
                         <span id="label-settingEnemiesChampion" data-setting-label="settingEnemiesChampion" class="text-base-content/80 text-xs group-hover:text-base-content">Champion</span>
-                        <div class="tooltip" data-setting-tip="settingEnemiesChampion" data-tip="Champion mobs, and solo mobs in random dungeons.">
-                            <span tabindex="0" role="img" aria-label="Champion mobs, and solo mobs in random dungeons." class="block"><i data-lucide="info" class="w-3 h-3 opacity-50"></i></span>
+                        <div class="tooltip" data-setting-tip="settingEnemiesChampion" data-tip="Champion 怪物，以及随机地下城里的单人怪物。">
+                            <span tabindex="0" role="img" aria-label="Champion 怪物，以及随机地下城里的单人怪物。" class="block"><i data-lucide="info" class="w-3 h-3 opacity-50"></i></span>
                         </div>
                     </label>
 
@@ -56,9 +56,9 @@
                     <div class="grid grid-cols-1 gap-2 max-w-xl">
                         <label class="flex items-center gap-2 p-2 rounded-lg bg-base-300 cursor-pointer group hover:bg-base-300/70 transition-colors">
                             <input type="checkbox" data-setting="settingEnemiesMinHealthFilter" aria-labelledby="label-settingEnemiesMinHealthFilter" class="toggle toggle-primary toggle-sm">
-                            <span id="label-settingEnemiesMinHealthFilter" data-setting-label="settingEnemiesMinHealthFilter" class="text-base-content/80 text-xs group-hover:text-base-content">Show enemies with minimum HP</span>
-                            <div class="tooltip" data-setting-tip="settingEnemiesMinHealthFilter" data-tip="Hides enemies whose max HP is below the minimum, unidentified ones included. Drones, Mists bosses, events and living resources are exempt.">
-                                <span tabindex="0" role="img" aria-label="Hides enemies whose max HP is below the minimum, unidentified ones included. Drones, Mists bosses, events and living resources are exempt." class="block"><i data-lucide="info" class="w-3 h-3 opacity-50"></i></span>
+                            <span id="label-settingEnemiesMinHealthFilter" data-setting-label="settingEnemiesMinHealthFilter" class="text-base-content/80 text-xs group-hover:text-base-content">只显示达到最低生命的敌人</span>
+                            <div class="tooltip" data-setting-tip="settingEnemiesMinHealthFilter" data-tip="隐藏最大生命低于该值的敌人，包括未识别的。Avalonian Drones、迷雾 Boss、活动怪和活体资源不受影响。">
+                                <span tabindex="0" role="img" aria-label="隐藏最大生命低于该值的敌人，包括未识别的。Avalonian Drones、迷雾 Boss、活动怪和活体资源不受影响。" class="block"><i data-lucide="info" class="w-3 h-3 opacity-50"></i></span>
                             </div>
                         </label>
 
@@ -67,7 +67,7 @@
                                 <input type="number" data-setting="settingEnemiesMinHealth" data-enabled-by="settingEnemiesMinHealthFilter"
                                        min="100" max="1000000" step="100"
                                        class="input input-bordered input-sm w-32 disabled:opacity-50">
-                                <span id="label-settingEnemiesMinHealth" data-setting-label="settingEnemiesMinHealth" class="text-base-content/60 text-xs">Minimum HP</span>
+                                <span id="label-settingEnemiesMinHealth" data-setting-label="settingEnemiesMinHealth" class="text-base-content/60 text-xs">最低生命</span>
                             </label>
                         </div>
                     </div>
@@ -80,7 +80,7 @@
         <input type="checkbox" data-setting="settingUiEnemiesMistsOpen" aria-labelledby="label-settingUiEnemiesMistsOpen"/>
         <div class="collapse-title text-xl font-semibold flex flex-wrap items-center gap-2">
             <i data-lucide="cloud-fog" class="w-5 h-5"></i>
-            <span id="label-settingUiEnemiesMistsOpen" data-setting-label="settingUiEnemiesMistsOpen">Mists Bosses</span>
+            <span id="label-settingUiEnemiesMistsOpen" data-setting-label="settingUiEnemiesMistsOpen">迷雾 Boss</span>
             <span class="badge bg-warning/20 border-warning/40 text-warning gap-1"><i data-lucide="flask-conical" class="w-3 h-3"></i>Experimental</span>
         </div>
         <div class="collapse-content">
@@ -116,7 +116,7 @@
         <input type="checkbox" data-setting="settingUiEnemiesOtherOpen" aria-labelledby="label-settingUiEnemiesOtherOpen"/>
         <div class="collapse-title text-xl font-semibold flex flex-wrap items-center gap-2">
             <i data-lucide="sparkles" class="w-5 h-5"></i>
-            <span id="label-settingUiEnemiesOtherOpen" data-setting-label="settingUiEnemiesOtherOpen">Other Enemies</span>
+            <span id="label-settingUiEnemiesOtherOpen" data-setting-label="settingUiEnemiesOtherOpen">其他怪物</span>
             <span class="badge bg-warning/20 border-warning/40 text-warning gap-1"><i data-lucide="flask-conical" class="w-3 h-3"></i>Not validated yet</span>
         </div>
         <div class="collapse-content">
@@ -128,9 +128,9 @@
 
                 <label class="flex items-center gap-2 p-2 rounded-lg bg-base-300 cursor-pointer group hover:bg-base-300/70 transition-colors">
                     <input type="checkbox" data-setting="settingEnemiesEvent" aria-labelledby="label-settingEnemiesEvent" class="checkbox checkbox-primary checkbox-xs">
-                    <span id="label-settingEnemiesEvent" data-setting-label="settingEnemiesEvent" class="text-base-content/80 text-xs group-hover:text-base-content">Event Enemies</span>
-                    <div class="tooltip" data-setting-tip="settingEnemiesEvent" data-tip="Not detected yet: no mob is classified as this type today.">
-                        <span tabindex="0" role="img" aria-label="Not detected yet: no mob is classified as this type today." class="block"><i data-lucide="info" class="w-3 h-3 opacity-50"></i></span>
+                    <span id="label-settingEnemiesEvent" data-setting-label="settingEnemiesEvent" class="text-base-content/80 text-xs group-hover:text-base-content">活动怪物</span>
+                    <div class="tooltip" data-setting-tip="settingEnemiesEvent" data-tip="目前还没有怪物被归入这一类。">
+                        <span tabindex="0" role="img" aria-label="目前还没有怪物被归入这一类。" class="block"><i data-lucide="info" class="w-3 h-3 opacity-50"></i></span>
                     </div>
                 </label>
             </div>
@@ -141,13 +141,13 @@
         <input type="checkbox" data-setting="settingUiEnemiesDisplayOpen" aria-labelledby="label-settingUiEnemiesDisplayOpen"/>
         <div class="collapse-title text-xl font-semibold flex items-center gap-2">
             <i data-lucide="eye" class="w-5 h-5 text-primary"></i>
-            <span id="label-settingUiEnemiesDisplayOpen" data-setting-label="settingUiEnemiesDisplayOpen">Display</span>
+            <span id="label-settingUiEnemiesDisplayOpen" data-setting-label="settingUiEnemiesDisplayOpen">显示</span>
         </div>
         <div class="collapse-content">
             <div class="grid grid-cols-1 gap-2 max-w-xl">
                 <label class="flex items-center gap-2 p-2 rounded-lg bg-base-300 cursor-pointer group hover:bg-base-300/70 transition-colors">
                     <input type="checkbox" data-setting="settingEnemiesShowHealthBars" class="toggle toggle-primary toggle-sm">
-                    <span id="label-settingEnemiesShowHealthBars" data-setting-label="settingEnemiesShowHealthBars" class="text-base-content/80 text-xs group-hover:text-base-content">Show Health Bars</span>
+                    <span id="label-settingEnemiesShowHealthBars" data-setting-label="settingEnemiesShowHealthBars" class="text-base-content/80 text-xs group-hover:text-base-content">显示生命条</span>
                 </label>
             </div>
             <p class="text-xs text-base-content/50 pt-4">

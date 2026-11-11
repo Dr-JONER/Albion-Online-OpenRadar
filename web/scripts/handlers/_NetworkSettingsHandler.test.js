@@ -159,7 +159,7 @@ describe('NetworkSettingsHandler', () => {
         const h = new NetworkSettingsHandler(container);
         await h.load();
 
-        expect(container.textContent).toContain('Capture not running');
+        expect(container.textContent).toContain('抓包未运行');
     });
 
     test('shows success banner when capturing on N interfaces', async () => {
@@ -173,7 +173,7 @@ describe('NetworkSettingsHandler', () => {
         const h = new NetworkSettingsHandler(container);
         await h.load();
 
-        expect(container.textContent).toMatch(/Capturing on 2 interface/i);
+        expect(container.textContent).toMatch(/正在 2 个网卡上抓包/);
     });
 
     test('apply enables when current is non-empty and user clears selection', async () => {
@@ -282,14 +282,14 @@ describe('NetworkSettingsHandler', () => {
         expect(container.querySelector('[data-iface="a"] input').disabled).toBe(true);
         expect(container.querySelector('[data-action="refresh"]').disabled).toBe(true);
         expect(container.querySelector('[data-action="apply"]').disabled).toBe(true);
-        expect(container.textContent).toContain('Only the PC running the radar can change this.');
+        expect(container.textContent).toContain('只有运行雷达的电脑可以修改此项。');
 
         await h.load();
 
         expect(container.querySelector('[data-iface="a"] input').disabled).toBe(true);
         expect(container.querySelector('[data-action="refresh"]').disabled).toBe(true);
         expect(container.querySelector('[data-action="apply"]').disabled).toBe(true);
-        expect(container.textContent).toContain('Only the PC running the radar can change this.');
+        expect(container.textContent).toContain('只有运行雷达的电脑可以修改此项。');
     });
 
     test('a poll reload keeps a checkbox the user ticked but has not applied', async () => {

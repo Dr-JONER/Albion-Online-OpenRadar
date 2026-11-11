@@ -2,7 +2,7 @@ const BADGES = {
     wifi: '🛜', ethernet: '🔌', exitlag: '🚀', vpn: '🔒', virtual: '🧪', other: '•',
 };
 const BADGE_LABEL = {
-    wifi: 'WiFi', ethernet: 'Ethernet', exitlag: 'ExitLag', vpn: 'VPN', virtual: 'Virtual', other: 'Other',
+    wifi: '无线', ethernet: '以太网', exitlag: 'ExitLag', vpn: 'VPN', virtual: '虚拟', other: '其他',
 };
 
 export class NetworkSettingsHandler {
@@ -19,7 +19,7 @@ export class NetworkSettingsHandler {
             fetch('/api/network/state'),
         ]);
         if (!ifacesRes.ok || !stateRes.ok) {
-            this.container.innerHTML = `<div class="alert alert-error">Failed to load network configuration.</div>`;
+            this.container.innerHTML = `<div class="alert alert-error">无法加载网络配置。</div>`;
             return;
         }
         this.interfaces = await ifacesRes.json();
@@ -45,17 +45,17 @@ export class NetworkSettingsHandler {
         this.container.innerHTML = `
             ${banner}
             ${this.renderExitLagNotice()}
-            <h3 class="text-base font-semibold mt-2">Capture interfaces</h3>
-            <p class="text-sm opacity-70 mb-2">Captured packets are merged across all checked interfaces. Tick at least one to start capture.</p>
+            <h3 class="text-base font-semibold mt-2">抓包网卡</h3>
+            <p class="text-sm opacity-70 mb-2">已勾选的网卡会合并抓包。至少勾选一个才会开始抓包。</p>
             <div class="flex flex-col gap-1">${rows}</div>
             <div class="flex flex-wrap items-center gap-2 mt-3">
-                <button class="btn btn-sm" data-action="refresh"${locked ? ' disabled' : ''}>Refresh list</button>
-                <button class="btn btn-sm btn-primary" data-action="apply" disabled>Apply changes</button>
-                ${locked ? '<span class="text-xs text-base-content/50">Only the PC running the radar can change this.</span>' : ''}
+                <button class="btn btn-sm" data-action="refresh"${locked ? ' disabled' : ''}>刷新列表</button>
+                <button class="btn btn-sm btn-primary" data-action="apply" disabled>应用更改</button>
+                ${locked ? '<span class="text-xs text-base-content/50">只有运行雷达的电脑可以修改此项。</span>' : ''}
             </div>
-            <h3 class="text-base font-semibold mt-6">LAN access</h3>
-            <p class="text-sm opacity-70">Reachable from devices on the same local network. Independent of the capture interfaces above.</p>
-            <ul class="list-disc pl-5">${lan || '<li class="opacity-60">No LAN address detected.</li>'}</ul>
+            <h3 class="text-base font-semibold mt-6">局域网访问</h3>
+            <p class="text-sm opacity-70">同一局域网内的设备可以打开。与上面的抓包网卡无关。</p>
+            <ul class="list-disc pl-5">${lan || '<li class="opacity-60">未检测到局域网地址。</li>'}</ul>
         `;
         this.bindEvents();
         this.updateApplyState();
@@ -65,13 +65,13 @@ export class NetworkSettingsHandler {
         return `
             <div class="alert alert-info mb-2" data-exitlag-notice>
                 <div class="flex flex-col gap-1">
-                    <div class="font-semibold">Using ExitLag?</div>
+                    <div class="font-semibold">在用 ExitLag？</div>
                     <div class="text-sm">
-                        Open <strong>ExitLag &rarr; Settings &rarr; Advanced Options &rarr; Redirection method</strong>
-                        and select <strong>NDIS (legacy)</strong>.
+                        打开 <strong>ExitLag &rarr; Settings &rarr; Advanced Options &rarr; Redirection method</strong>，
+                        选择 <strong>NDIS (legacy)</strong>。
                     </div>
                     <div class="text-sm">
-                        The default WFP mode hides Albion's traffic from packet capture; the radar will see no packets.
+                        默认的 WFP 模式会让抓包看不到 Albion 的流量，雷达将收不到数据包。
                     </div>
                 </div>
             </div>
@@ -80,16 +80,16 @@ export class NetworkSettingsHandler {
 
     renderBanner() {
         if (this.state?.status === 'awaiting_interfaces') {
-            return `<div class="alert alert-warning mb-2">⚠ Capture not running. Pick at least one interface below to start.</div>`;
+            return `<div class="alert alert-warning mb-2">⚠ 抓包未运行。请在下面至少选择一个网卡再开始。</div>`;
         }
         const n = (this.state?.captureInterfaces ?? []).length;
-        return `<div class="alert alert-success mb-2">✓ Capturing on ${n} interface${n > 1 ? 's' : ''}.</div>`;
+        return `<div class="alert alert-success mb-2">✓ 正在 ${n} 个网卡上抓包。</div>`;
     }
 
     renderRow(iface, checked, locked) {
         const badge = BADGES[iface.category] ?? BADGES.other;
         const label = BADGE_LABEL[iface.category] ?? BADGE_LABEL.other;
-        const unavail = iface.isAvailable ? '' : ' <span class="opacity-60">(unavailable)</span>';
+        const unavail = iface.isAvailable ? '' : ' <span class="opacity-60">（不可用）</span>';
         return `
             <label class="flex flex-wrap items-center gap-2 p-2 rounded-lg bg-base-300 cursor-pointer group hover:bg-base-300/70 transition-colors" data-iface="${escapeHTML(iface.name)}">
                 <input type="checkbox" class="checkbox checkbox-primary checkbox-xs" ${checked ? 'checked' : ''} ${iface.isAvailable && !locked ? '' : 'disabled'}>
@@ -137,14 +137,14 @@ export class NetworkSettingsHandler {
             });
             if (!res.ok) {
                 const txt = await res.text();
-                window.toast?.error?.(`Apply failed: ${txt}`);
+                window.toast?.error?.(`应用失败：${txt}`);
                 await this.load();
                 return;
             }
-            window.toast?.success?.('Capture interfaces updated.');
+            window.toast?.success?.('抓包网卡已更新。');
             await this.load();
         } catch (err) {
-            window.toast?.error?.(`Network error: ${err.message ?? err}`);
+            window.toast?.error?.(`网络错误：${err.message ?? err}`);
             if (btn) btn.disabled = false;
         }
     }
@@ -153,12 +153,12 @@ export class NetworkSettingsHandler {
         try {
             const r = await fetch('/api/network/refresh', {method: 'POST'});
             if (!r.ok) {
-                window.toast?.error?.('Refresh failed.');
+                window.toast?.error?.('刷新失败。');
                 return;
             }
             await this.load();
         } catch (err) {
-            window.toast?.error?.(`Refresh error: ${err.message ?? err}`);
+            window.toast?.error?.(`刷新出错：${err.message ?? err}`);
         }
     }
 }

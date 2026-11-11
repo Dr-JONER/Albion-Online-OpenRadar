@@ -13,7 +13,7 @@ function updateVisibility(button) {
 function render(button) {
     const active = Boolean(document.fullscreenElement);
     const label = button.querySelector('span');
-    if (label) label.textContent = active ? 'Exit Fullscreen' : 'Fullscreen';
+    if (label) label.textContent = active ? '退出全屏' : '全屏';
     const icon = button.querySelector('[data-lucide]');
     if (icon) icon.setAttribute('data-lucide', active ? 'minimize' : 'maximize');
     window.lucide?.createIcons({root: button});

@@ -421,10 +421,10 @@ export class RadarRenderer {
 
         const stats = [];
         if (settingsSync.getBool('settingPlayersDetect')) {
-            stats.push({ emoji: '👥', count: playerCount, label: 'players', color: '#ffffff' });
+            stats.push({ emoji: '👥', count: playerCount, label: '玩家', color: '#ffffff' });
         }
-        stats.push({ emoji: '📦', count: resourceCount, label: 'resources', color: '#00d4ff' });
-        stats.push({ emoji: '👾', count: mobCount, label: 'mobs', color: '#ff6b6b' });
+        stats.push({ emoji: '📦', count: resourceCount, label: '资源', color: '#00d4ff' });
+        stats.push({ emoji: '👾', count: mobCount, label: '怪物', color: '#ff6b6b' });
 
         const canvasSize = ctx.canvas.width;
         const scale = Math.min(1, canvasSize / 500);

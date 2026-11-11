@@ -182,21 +182,21 @@ encrypts live positions, see [Known limitations](#known-limitations).
 
 | Control                    | Range                                           |
 |----------------------------|-------------------------------------------------|
-| Zoom                       | 10% to 300%                                     |
-| Max size                   | 300px to 1200px                                 |
-| Fit to screen              | toggle, fills the window up to 1200px           |
-| Icon size                  | 50% to 200%                                     |
-| Map background             | toggle, zone map under the radar                |
-| Zone info box              | toggle, zone name, tier and PvP marker          |
-| Stats box                  | toggle, resource, mob and player counts         |
-| Players beside radar       | toggle, player list right of the radar if room  |
-| Keep screen awake          | toggle on touch screens, keeps the screen on    |
-| Resource count             | toggle, estimated quantity per node             |
-| Resource distance          | toggle, distance in meters per node             |
-| Resource tier color badges | toggle, colored squares with tier and enchant   |
-| Resource clusters          | toggle, rings around groups of nearby nodes     |
-| Cluster radius (m)         | 10 m to 100 m                                   |
-| Min nodes per cluster      | 2 to 10                                         |
+| 缩放                       | 10% to 300%                                     |
+| 最大尺寸                   | 300px to 1200px                                 |
+| 适应屏幕                   | toggle, fills the window up to 1200px           |
+| 图标大小                   | 50% to 200%                                     |
+| 地图背景                   | toggle, zone map under the radar                |
+| 区域信息                   | toggle, zone name, tier and PvP marker          |
+| 统计框                     | toggle, resource, mob and player counts         |
+| 玩家列表靠右               | toggle, player list right of the radar if room  |
+| 保持屏幕常亮               | toggle on touch screens, keeps the screen on    |
+| 资源数量                   | toggle, estimated quantity per node             |
+| 资源距离                   | toggle, distance in meters per node             |
+| 资源等阶色块               | toggle, colored squares with tier and enchant   |
+| 资源聚集                   | toggle, rings around groups of nearby nodes     |
+| 聚集半径（米）             | 10 m to 100 m                                   |
+| 每组最少点数               | 2 to 10                                         |
 | Fullscreen                 | header button                                   |
 | PiP                        | Picture-in-Picture floating window              |
 
